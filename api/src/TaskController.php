@@ -5,8 +5,8 @@ use MichaelDevery\Tasklist\Library\AbstractController;
 
 class TaskController extends AbstractController
 {
-	public function getTask()
+	public function getTask($id)
 	{
-		return 'Task Object';
+		return  "Returning task object with id : $id";
 	}	
 }

@@ -2,12 +2,13 @@
 namespace MichaelDevery\TaskList\Library;
 
 use MichaelDevery\Tasklist\Request;
+use MichaelDevery\Tasklist\Library\AbstractModel;
 
 abstract class AbstractController
 {
 	/** @var Request */
 	protected $request;
-	/** todo what is the model? */
+	/** @var AbstractModel */
 	protected $model;
 
 	/**
@@ -16,5 +17,9 @@ abstract class AbstractController
 	public function __construct(Request $request)
 	{
 		$this->request = $request;
+		$ownName = str_replace('Controller', '', (new \ReflectionClass($this))->getShortName());
+		$modelName =  MODEL_NAMESPACE . '\\' .  $ownName . 'Model';
+
+		$this->model = new $modelName($modelName);
 	}
 }

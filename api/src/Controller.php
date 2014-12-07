@@ -7,7 +7,7 @@ class Controller {
 
 
 	const CONTROLLER_SUFFIX = 'Controller';
-	const CONTROLLER_NAMESPACE = 'MichaelDevery\Tasklist';
+	const CONTROLLER_NAMESPACE = __NAMESPACE__;
 
 	/**
 	 * @param array $route
@@ -45,7 +45,8 @@ class Controller {
 		
 		// get request specificity to prefix actions
 		$requestSpecificity = count($route) % 2 === 0 ? REQUEST_TARGET_SINGLE : REQUEST_TARGET_ALL;
-		
+		$id = null;
+
 		if ($error === false) {
 			// specify resource
 			$resource = ucfirst(array_shift($route));
@@ -58,13 +59,14 @@ class Controller {
 				$action .= ucfirst($this->pluralize($resource));
 			} else {
 				$action .= ucfirst($resource);
+				$id = (int) array_shift($route);
 			}
 		}
 
 		// initialize controller and pass request to it
 		$controller = new $mainController($request);
-		die($controller->$action() . "\n");
-		return $controller->$action();
+		die($controller->$action($id) . "\n");
+		return $controller->$action($id);
 	}
 
 	function pluralize($word)

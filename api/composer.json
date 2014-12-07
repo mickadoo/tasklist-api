@@ -1,0 +1,20 @@
+{
+	"name": "mickadoo/tasklist",
+	"description": "Simple task manager application for PHP",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Michael Devery",
+			"email": "michaeldevery@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"MichaelDevery\\Tasklist\\": "src/"
+		}
+	},
+	"require": {
+		"symfony/yaml": "2.6.1"
+	}
+}
+	
