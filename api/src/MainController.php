@@ -2,8 +2,9 @@
 namespace MichaelDevery\Tasklist;
 
 use MichaelDevery\Tasklist\TaskController;
+use MichaelDevery\Tasklist\Config;
 
-class Controller {
+class MainController {
 
 
 	const CONTROLLER_SUFFIX = 'Controller';
@@ -63,8 +64,10 @@ class Controller {
 			}
 		}
 
+		// creat config
+		$config = new Config(__DIR__ . '/../config/config.yml');
 		// initialize controller and pass request to it
-		$controller = new $mainController($request);
+		$controller = new $mainController($request, $config);
 		die($controller->$action($id) . "\n");
 		return $controller->$action($id);
 	}

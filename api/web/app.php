@@ -32,7 +32,7 @@ $queryParams = (isset($urlParts['query']) ? $urlParts['query'] : null);
 // build request
 $request = new Request($url, $method, $data, $queryParams);
 
-$mainController = new Controller();
+$mainController = new MainController();
 
 // route
 $mainController->route($route, $request);

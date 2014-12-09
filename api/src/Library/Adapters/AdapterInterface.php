@@ -1,5 +1,5 @@
 <?php
-namespace MichaelDevery\Tasklist\Library;
+namespace MichaelDevery\Tasklist\Library\Adapters;
 
 Interface AdapterInterface
 {

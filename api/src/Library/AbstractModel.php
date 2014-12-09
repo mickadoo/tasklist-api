@@ -1,7 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist\Library;
 
-use AdapterInterface;
+use MichaelDevery\Tasklist\Library\Adapters\AdapterInterface;
+use MichaelDevery\Tasklist\Config;
 
 abstract class AbstractModel
 {
@@ -11,12 +12,15 @@ abstract class AbstractModel
 	protected $name;
 
 	/**
-	 * @param string $name;
+	 * @param string $name
+	 * @param Config $config
 	 */
-	public function __construct($name)
+	public function __construct($name, Config $config)
 	{
-		// todo create Adapter using config file
 		$this->name = $name;
+		$adapter = $config->getAdapterName();
+		$adapter = __NAMESPACE__ . '\\Adapters\\' . $adapter;
+		$this->adapter = new $adapter();
 	}
 
 }
