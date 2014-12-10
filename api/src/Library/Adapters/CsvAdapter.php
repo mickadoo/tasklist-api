@@ -5,23 +5,176 @@ use MichaelDevery\Tasklist\Library\Adapters\AdapterInterface;
 
 class CsvAdapter implements AdapterInterface
 {
-	public function create()
+
+	const FILE_FORMAT = '.csv';
+
+	/** @var string */
+	protected $dataFolder = 'csv_data/';
+
+	public function create($name, $data)
 	{
-		// todo write method body
+		$this->createResourceFileIfNotExists($name);
+		$fileName = $this->getResourceFileName($name);
+		
+		// get last id
+		$id = $this->getLastId($name);
+		$newId = $id + 1;
+		// open file for appending
+		$handle = fopen($fileName,'a');
+		// merge new id with data
+		$data = array_merge([$newId], $data);
+		// write data to end of file
+		fputcsv($handle,$data);
+		// save and return new id
+		fclose($handle);
+		return $data;
 	}
 
-	public function read()
+	public function read($name, $id, $fields = null)
 	{
-		// todo write method body
+		if (!$this->resourceFileExists($name)){
+			// todo handle this better
+			die('no resource');
+		}
+		$file = fopen($this->getResourceFileName($name), 'r');
+
+		while(! feof($file)){
+			$row = fgetcsv($file);
+			if ($id === (int) $row[0]){
+				return $row;
+			}
+		}
+		return array();
 	}
 
-	public function update()
+	public function update($name, $id, $data)
 	{
-		// todo write method body
+		// open file
+		$file = fopen($this->getResourceFileName($name), 'r');
+		// create temp file
+		$tempFileName = __DIR__ . '/' . $this->getDataFolder() . 'temp.csv';
+		$tempFile = fopen($tempFileName, 'w');
+		// loop through file and write if doesn't match id
+		$found = false;
+		if ($file){
+			while (! feof($file)){
+				$row = fgetcsv($file);
+				if ($row && $id !== (int) $row[0]){
+					fputcsv($tempFile, $row);
+				} elseif ($row) {
+					fputcsv($tempFile, array_merge([$id], $data));
+					$found = true;
+				}
+			}
+		} else {
+			// todo handle better
+			die('no file');
+		}
+		fclose($file);
+		fclose($tempFile);
+		// delete original and replace with temp
+		rename($tempFileName, $this->getResourceFileName($name));
+		// return id
+		if ($found){
+			return array_merge([$id], $data);
+		} else {
+			// todo handle better
+			die('not found');
+		}
 	}
 
-	public function delete()
+	public function delete($name, $id)
 	{
-		// todo write method body
+		// open file
+		$file = fopen($this->getResourceFileName($name), 'r');
+		// create temp file
+		$tempFileName = __DIR__ . '/' . $this->getDataFolder() . 'temp.csv';
+		$tempFile = fopen($tempFileName, 'w');
+		// loop through file and write if doesn't match id
+		$found = false;
+		if ($file){
+			while (! feof($file)){
+				$row = fgetcsv($file);
+				if ($row && $id !== (int) $row[0]){
+					fputcsv($tempFile, $row);
+				} elseif ($row) {
+					$found = true;
+				}
+			}
+		} else {
+			// todo handle better
+			die('no file');
+		}
+		fclose($file);
+		fclose($tempFile);
+		// delete original and replace with temp
+		rename($tempFileName, $this->getResourceFileName($name));
+		// return id
+		if ($found){
+			return $id;
+		} else {
+			// todo handle better
+			die('not found');
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function resourceFileExists($name)
+	{
+		return file_exists($this->getResourceFileName($name));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getResourceFileName($name){
+		return __DIR__ . '/' . $this->getDataFolder() . $name  . self::FILE_FORMAT;
+	}
+
+	/**
+	 * @descrption convenience function combining check and creation
+	 */
+	public function createResourceFileIfNotExists($name)
+	{
+		if (!$this->resourceFileExists($name)){
+			$this->createResourceFile($name);
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function createResourceFile($name)
+	{
+		return touch($this->getResourceFileName($name));
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getLastId($name)
+	{
+		$fileName = $this->getResourceFileName($name);
+		$fileContents = file($fileName);
+		
+		// if no data return 0
+		if ($fileContents === null){
+			return 0; 
+		}
+
+		$lastRow = str_getcsv(array_pop($fileContents));
+		$id = array_shift($lastRow);
+		return (int) $id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataFolder()
+	{
+		return $this->dataFolder;
 	}
 }

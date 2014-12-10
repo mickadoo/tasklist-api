@@ -25,11 +25,11 @@ class Request
 	 * @param string $data
 	 */
 	public function __construct($url, $method = Request::METHOD_GET, $data = null, $queryParams = null)
-	{
+	{	
 		$this->url = $url;
 		$this->method = $method;
 		if ($this->isValidJson($data)) {
-			$this->data = $data;
+			$this->data = json_decode($data, 1);
 		}
 		$this->queryParams = $queryParams;
 	}

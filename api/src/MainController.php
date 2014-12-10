@@ -54,13 +54,17 @@ class MainController {
 			// append suffix to controller name to follow naming convention
 			$mainController = $this::CONTROLLER_NAMESPACE . '\\' . trim($resource . $this::CONTROLLER_SUFFIX);
 			// define action
-			$action =  $actionPrefix[$request->getMethod()] . $requestSpecificity;
-			// add the name of the resource to action
-			if ($requestSpecificity === REQUEST_TARGET_ALL){
-				$action .= ucfirst($this->pluralize($resource));
+			if ($request->getMethod() === Request::METHOD_POST && $requestSpecificity == REQUEST_TARGET_ALL){
+				$action = $actionPrefix[Request::METHOD_POST] . ucfirst($resource);
 			} else {
-				$action .= ucfirst($resource);
-				$id = (int) array_shift($route);
+				$action =  $actionPrefix[$request->getMethod()] . $requestSpecificity;
+				// add the name of the resource to action
+				if ($requestSpecificity === REQUEST_TARGET_ALL){
+					$action .= ucfirst($this->pluralize($resource));
+				} else {
+					$action .= ucfirst($resource);
+					$id = (int) array_shift($route);
+				}
 			}
 		}
 

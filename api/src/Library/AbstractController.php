@@ -23,7 +23,7 @@ abstract class AbstractController
 		$this->config = $config;
 		$ownName = str_replace('Controller', '', (new \ReflectionClass($this))->getShortName());
 		$modelName =  MODEL_NAMESPACE . '\\' .  $ownName . 'Model';
-		$this->model = new $modelName($modelName, $config);
+		$this->model = new $modelName($ownName, $config);
 	}
 }
 

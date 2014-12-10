@@ -23,4 +23,12 @@ abstract class AbstractModel
 		$this->adapter = new $adapter();
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
 }

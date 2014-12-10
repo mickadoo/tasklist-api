@@ -15,7 +15,7 @@ $url = trim($_SERVER['REQUEST_URI'],'/');
 $method = $_SERVER['REQUEST_METHOD'];
 
 // get json data from request
-$data = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : null;
+$data = file_get_contents('php://input');
 
 // parse url
 $urlParts = parse_url($url);

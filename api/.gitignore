@@ -2,3 +2,4 @@ config/
 !config/config.sample.yml
 vendor/
 composer.lock
+src/Library/Adapters/csv_data/
