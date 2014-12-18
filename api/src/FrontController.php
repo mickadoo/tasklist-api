@@ -1,10 +1,7 @@
 <?php
 namespace MichaelDevery\Tasklist;
 
-use MichaelDevery\Tasklist\TaskController;
-use MichaelDevery\Tasklist\Config;
-
-class MainController {
+class FrontController {
 
 
 	const CONTROLLER_SUFFIX = 'Controller';
