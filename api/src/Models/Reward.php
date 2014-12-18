@@ -1,7 +1,7 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
-class Reward implements JsonSerializableInterface
+class Reward implements \JsonSerializable
 {
 	/** @var int */
 	private $id;

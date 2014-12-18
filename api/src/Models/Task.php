@@ -1,7 +1,7 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
-class Task implements JsonSerializableInterface
+class Task implements \JsonSerializable
 {
 	/** @var int */
 	private $id;

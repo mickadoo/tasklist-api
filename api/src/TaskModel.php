@@ -13,8 +13,9 @@ Class TaskModel extends AbstractModel
 	public function getTask($id)
 	{
 		$taskData = $this->map($this->adapter->read($this->name, $id));
+        // todo error if not found
 		$task = new Task($taskData);
-		return json_encode($task->toArray());
+		return $task;
 	}
 
 	/**
@@ -23,8 +24,13 @@ Class TaskModel extends AbstractModel
 	 */
 	public function addTask($data)
 	{
-		$newTask = $this->adapter->create($this->getName(), $data);
-		return $newTask;
+		$newTaskData = $this->map(
+            $this->adapter->create(
+                $this->getName(), $data
+            )
+        );
+        $task = new Task($newTaskData);
+		return $task;
 	}
 
 	/**
@@ -44,7 +50,14 @@ Class TaskModel extends AbstractModel
 	 */
 	public function updateTask($id, $data)
 	{
-		$updatedTask = $this->adapter->update($this->getName(), $id, $data);
+		$updatedTaskData = $this->map(
+            $this->adapter->update(
+                $this->getName(), $id, $data
+            )
+        );
+
+        $updatedTask = new Task($updatedTaskData);
+
 		return $updatedTask;
 	}
 
@@ -63,8 +76,11 @@ Class TaskModel extends AbstractModel
 	 * @return Task[]
 	 */
 	public function getAllTasks(){
-		$tasks = $this->adapter->read($this->name);
-		//todo build task object and return it
+		$tasksData = $this->adapter->read($this->name);
+        $tasks = array();
+        foreach ($tasksData as $taskData){
+            $tasks[] = new Task($this->map($taskData));
+        }
 		return $tasks;
 	}
 

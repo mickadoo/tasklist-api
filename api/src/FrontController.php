@@ -43,7 +43,18 @@ class FrontController {
 		
 		// get request specificity to prefix actions
 		$requestSpecificity = count($route) % 2 === 0 ? REQUEST_TARGET_SINGLE : REQUEST_TARGET_ALL;
-		$id = null;
+
+        // check if request is for top level resource
+        $subRequest = ((int) ((count($route) + 1) / 2) > 1) ? true : false;
+        if ($subRequest){
+            // request targets a sub-resource of parent
+            $parent = ucfirst(array_shift($route));
+            $parentId = (int) array_shift($route);
+        }
+
+        $mainController = null;
+        $id = null;
+        $action = null;
 
 		if ($error === false) {
 			// specify resource
@@ -65,12 +76,15 @@ class FrontController {
 			}
 		}
 
-		// creat config
+		// create config
 		$config = new Config(__DIR__ . '/../config/config.yml');
 		// initialize controller and pass request to it
 		$controller = new $mainController($request, $config);
-		die($controller->$action($id) . "\n");
-		return $controller->$action($id);
+        if ($subRequest) {
+            return $controller->$action($parentId, $id);
+        } else {
+            return $controller->$action($id);
+        }
 	}
 
 	function pluralize($word)

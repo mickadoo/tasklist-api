@@ -19,8 +19,8 @@ class CsvAdapter implements AdapterInterface
 		$newId = $id + 1;
 		// open file for appending
 		$handle = fopen($fileName,'a');
-		// merge new id with data
-		$data = array_merge([$newId], $data);
+		// merge new id with data while un-setting old array keys (for mapping)
+		$data = array_merge([$newId], array_values($data));
 		// write data to end of file
 		fputcsv($handle,$data);
 		// save and return new id
@@ -40,11 +40,11 @@ class CsvAdapter implements AdapterInterface
 
 		while(! feof($file)){
 			$row = fgetcsv($file);
-			if ($id){
+			if ($id && $row){
 				if ($id === (int) $row[0]){
 					return $row;
 				}
-			} else {
+			} elseif ($row) { // prevents 'false' being returns for last row
 				$results[] = $row;
 			}
 		}
@@ -78,9 +78,9 @@ class CsvAdapter implements AdapterInterface
 		fclose($tempFile);
 		// delete original and replace with temp
 		rename($tempFileName, $this->getResourceFileName($name));
-		// return id
 		if ($found){
-			return array_merge([$id], $data);
+            // return id and updated data without keys (for mapping)
+			return array_merge([$id], array_values($data));
 		} else {
 			// todo handle better
 			die('not found');
@@ -123,7 +123,7 @@ class CsvAdapter implements AdapterInterface
 		// return id
 		if ($found){
 			// todo decide what to return on successful delete
-			return true;
+			return $id;
 		} else {
 			// todo handle better
 			die('not found');

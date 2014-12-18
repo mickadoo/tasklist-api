@@ -9,12 +9,14 @@ class TaskController extends AbstractController
 	 * @return Response
 	 */
 	public function getTask($id)
-	{
-		$taskData = $this->model->getTask($id);
-		die(var_dump($taskData));
-		// todo make proper response
-		return new Response();
-	}	
+    {
+        $task = $this->model->getTask($id);
+        $response = new Response();
+        $response->setCode(200);
+        $response->setData(json_encode($task));
+        $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $task->getId());
+        return $response;
+    }
 
 	/**
 	 * @return Response
@@ -23,11 +25,13 @@ class TaskController extends AbstractController
 	{
 		$data = $this->request->getData();
 		$newTask = $this->model->addTask($data);
-		die(var_dump($newTask));
-		// todo make proper response format
-		return new Response();
 
-	}
+        $response = new Response();
+        $response->setCode(201);
+        $response->setData(json_encode($newTask));
+        $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $newTask->getId());
+        return $response;
+    }
 
 	/**
 	 * @param int $id
@@ -36,9 +40,10 @@ class TaskController extends AbstractController
 	public function deleteTask($id)
 	{
 		$deletedId = $this->model->deleteTask($id);
-		die('Deleted : ' . $deletedId);
-		// todo make proper response
-		return new Response();
+        $response = new Response();
+        $response->setCode(200);
+        $response->setData(['id' => $deletedId]);
+		return $response;
 	}
 
 	/**
@@ -48,9 +53,32 @@ class TaskController extends AbstractController
 	public function updateTask($id)
 	{
 		$data = $this->request->getData();
-		$updatedTask = $this->model->updateTask($id, $data);
-		die('Updated: \n ' . var_dump($updatedTask));
-		// todo make proper response
-		return new Response();
+        $updatedTask = $this->model->updateTask($id, $data);
+
+        $response = new Response();
+        $response->setCode(200);
+        $response->setData(json_encode($updatedTask));
+        $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $updatedTask->getId());
+        return $response;
 	}
+
+    public function getAllTasks()
+    {
+        $tasks = $this->model->getAllTasks();
+
+        // have to call on each one
+        foreach ($tasks as $key => $task){
+            $tasks[$key] = json_encode($task);
+        }
+
+        $response = new Response();
+        $response->setCode(200);
+
+        $response->setData(json_encode($tasks));
+        $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/');
+
+        return $response;
+    }
+
+    // todo add methods for *AllTasks
 }

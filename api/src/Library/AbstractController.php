@@ -25,5 +25,13 @@ abstract class AbstractController
 		$modelName =  MODEL_NAMESPACE . '\\' .  $ownName . 'Model';
 		$this->model = new $modelName($ownName, $config);
 	}
+
+    /**
+     * @return string
+     */
+    protected function getBaseUrl()
+    {
+        return $_SERVER['HTTP_HOST'];
+    }
 }
 

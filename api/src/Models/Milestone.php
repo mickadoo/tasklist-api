@@ -1,7 +1,7 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
-class Milestone implements JsonSerializableInterface
+class Milestone implements \JsonSerializable
 {
 	/** @var int */
 	private $id;
