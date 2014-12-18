@@ -31,4 +31,5 @@ abstract class AbstractModel
 		return $this->name;
 	}
 
+	protected abstract function map(array $data);
 }

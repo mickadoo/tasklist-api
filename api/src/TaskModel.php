@@ -2,17 +2,19 @@
 namespace MichaelDevery\Tasklist;
 
 use MichaelDevery\Tasklist\Library\AbstractModel;
+use MichaelDevery\Tasklist\Models\Task;
 
 Class TaskModel extends AbstractModel
 {
-	/**
-	 * @param int $id
-	 */
+    /**
+     * @param $id
+     * @return Task
+     */
 	public function getTask($id)
 	{
-		$taskData = $this->adapter->read($this->name, $id);
-		//todo build Task object and return it;
-		return $taskData;
+		$taskData = $this->map($this->adapter->read($this->name, $id));
+		$task = new Task($taskData);
+		return json_encode($task->toArray());
 	}
 
 	/**
@@ -44,6 +46,43 @@ Class TaskModel extends AbstractModel
 	{
 		$updatedTask = $this->adapter->update($this->getName(), $id, $data);
 		return $updatedTask;
+	}
+
+	/**
+	 * @param int $id
+	 * @param array $data
+	 * @return array
+	 */
+	public function replaceTask($id, $data)
+	{
+		$updatedTask = $this->adapter->update($this->getName(), $id, $data);
+		return $updatedTask;
+	}
+
+	/**
+	 * @return Task[]
+	 */
+	public function getAllTasks(){
+		$tasks = $this->adapter->read($this->name);
+		//todo build task object and return it
+		return $tasks;
+	}
+
+    /**
+     * @param array $data
+     * @return array
+     */
+	protected function map(array $data)
+	{
+		$fields = ['id','name','difficulty','goal'];
+
+		$results = array();
+		foreach ($data as $key => $current){
+            if (isset($fields[$key])) {
+                $results[$fields[$key]] = $current;
+            }
+		}
+		return $results;
 	}
 
 	//todo add all other methods	

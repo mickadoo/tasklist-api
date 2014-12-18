@@ -1,8 +1,6 @@
 <?php
 namespace MichaelDevery\Tasklist\Library\Adapters;
 
-use MichaelDevery\Tasklist\Library\Adapters\AdapterInterface;
-
 class CsvAdapter implements AdapterInterface
 {
 
@@ -30,7 +28,7 @@ class CsvAdapter implements AdapterInterface
 		return $data;
 	}
 
-	public function read($name, $id, $fields = null)
+	public function read($name, $id = null, $fields = null)
 	{
 		if (!$this->resourceFileExists($name)){
 			// todo handle this better
@@ -38,13 +36,19 @@ class CsvAdapter implements AdapterInterface
 		}
 		$file = fopen($this->getResourceFileName($name), 'r');
 
+		$results = array();
+
 		while(! feof($file)){
 			$row = fgetcsv($file);
-			if ($id === (int) $row[0]){
-				return $row;
+			if ($id){
+				if ($id === (int) $row[0]){
+					return $row;
+				}
+			} else {
+				$results[] = $row;
 			}
 		}
-		return array();
+        return $results;
 	}
 
 	public function update($name, $id, $data)
@@ -83,8 +87,15 @@ class CsvAdapter implements AdapterInterface
 		}
 	}
 
-	public function delete($name, $id)
+	public function delete($name, $id = null)
 	{
+		// delete all
+		if (!$id){
+			unlink($this->getResourceFileName($name));
+			$this->createResourceFile($name);
+			// todo decide what to return on successful delete		
+			return true;
+		}
 		// open file
 		$file = fopen($this->getResourceFileName($name), 'r');
 		// create temp file
@@ -111,7 +122,8 @@ class CsvAdapter implements AdapterInterface
 		rename($tempFileName, $this->getResourceFileName($name));
 		// return id
 		if ($found){
-			return $id;
+			// todo decide what to return on successful delete
+			return true;
 		} else {
 			// todo handle better
 			die('not found');
@@ -121,7 +133,7 @@ class CsvAdapter implements AdapterInterface
 	/**
 	 * @return bool
 	 */
-	public function resourceFileExists($name)
+	private function resourceFileExists($name)
 	{
 		return file_exists($this->getResourceFileName($name));
 	}
@@ -129,14 +141,14 @@ class CsvAdapter implements AdapterInterface
 	/**
 	 * @return string
 	 */
-	public function getResourceFileName($name){
+	private function getResourceFileName($name){
 		return __DIR__ . '/' . $this->getDataFolder() . $name  . self::FILE_FORMAT;
 	}
 
 	/**
 	 * @descrption convenience function combining check and creation
 	 */
-	public function createResourceFileIfNotExists($name)
+	private function createResourceFileIfNotExists($name)
 	{
 		if (!$this->resourceFileExists($name)){
 			$this->createResourceFile($name);
@@ -146,7 +158,7 @@ class CsvAdapter implements AdapterInterface
 	/**
 	 * @return bool
 	 */
-	public function createResourceFile($name)
+	private function createResourceFile($name)
 	{
 		return touch($this->getResourceFileName($name));
 	}
@@ -173,7 +185,7 @@ class CsvAdapter implements AdapterInterface
 	/**
 	 * @return string
 	 */
-	public function getDataFolder()
+	private function getDataFolder()
 	{
 		return $this->dataFolder;
 	}
