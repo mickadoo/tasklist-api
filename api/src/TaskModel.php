@@ -19,16 +19,30 @@ Class TaskModel extends AbstractModel
 	}
 
 	/**
-	 * @param array
+	 * @param Task $task
 	 * @return array
 	 */
-	public function addTask($data)
+	public function addTask(Task $task)
 	{
+        // remove child classes for initialization later
+        $childClasses = arrays();
+        foreach ($this->getChildClasses() as $childClass){
+            if (isset($data[$childClass])) {
+                $childClasses[] = $data[$childClass];
+                unset($data[$childClass]);
+            }
+        }
+        // create task
 		$newTaskData = $this->map(
             $this->adapter->create(
                 $this->getName(), $data
             )
         );
+        // create child classes
+        $parentId = $task->getId();
+        foreach ($childClasses as $childClass){
+
+        }
         $task = new Task($newTaskData);
 		return $task;
 	}
@@ -100,6 +114,13 @@ Class TaskModel extends AbstractModel
 		}
 		return $results;
 	}
+
+    protected function getChildClasses(){
+        return [
+            'reward',
+            'milestone'
+        ];
+    }
 
 	//todo add all other methods	
 }

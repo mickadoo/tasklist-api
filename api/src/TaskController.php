@@ -1,7 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist;
 
-use MichaelDevery\Tasklist\Library\AbstractController; 
+use MichaelDevery\Tasklist\Library\AbstractController;
+use MichaelDevery\Tasklist\Models\Task;
 
 class TaskController extends AbstractController
 {
@@ -24,7 +25,8 @@ class TaskController extends AbstractController
 	public function addTask()
 	{
 		$data = $this->request->getData();
-		$newTask = $this->model->addTask($data);
+        $task = new Task($data);
+		$newTask = $this->model->addTask($task);
 
         $response = new Response();
         $response->setCode(201);

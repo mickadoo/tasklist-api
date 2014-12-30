@@ -27,7 +27,7 @@ class Task implements \JsonSerializable
     public function __construct(array $data = [])
     {
         if ($data) {
-            $this->hydrate($data);
+            $this->hydrate($data, array('milestone'));
         }
     }
 
