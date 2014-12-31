@@ -12,9 +12,6 @@ class Task implements \JsonSerializable
 	/** @var int */
 	private $difficulty;
 
-	/** @var string */
-	private $goal;
-
 	/** @var Milestone[] */
 	private $milestones;
 
@@ -80,23 +77,6 @@ class Task implements \JsonSerializable
 	public function setDifficulty($difficulty)
 	{
 		$this->difficulty = $difficulty;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getGoal()
-	{
-		return $this->goal;
-	}
-
-	/**
-	 * @var string $goal
-	 */
-	public function setGoal($goal)
-	{
-		$this->goal = $goal;
 	}
 
 	/**
