@@ -110,4 +110,12 @@ class Milestone implements \JsonSerializable
 	{
 		$this->rewardBudget = $rewardBudget;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return $this->jsonSerialize();
+	}
 }

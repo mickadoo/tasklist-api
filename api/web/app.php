@@ -2,8 +2,6 @@
 namespace MichaelDevery\Tasklist;
 require_once('../vendor/autoload.php');
 
-define('MODEL_NAMESPACE', __NAMESPACE__);
-
 const REQUEST_TARGET_SINGLE = '';
 const REQUEST_TARGET_ALL = 'All';
 

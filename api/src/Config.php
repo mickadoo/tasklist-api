@@ -43,7 +43,8 @@ class Config
 	{
 		if(file_exists($dir)){
 			return Yaml::parse($dir);
+		} else {
+			throw new \Exception('Cannot find config file');
 		}
-		return null;
 	}
 }

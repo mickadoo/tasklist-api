@@ -18,15 +18,15 @@ class Task implements \JsonSerializable
 	/** @var Milestone[] */
 	private $milestones;
 
-    /**
-     * @param array $data
-     */
-    public function __construct(array $data = [])
-    {
-        if ($data) {
-            $this->hydrate($data, array('milestones'));
-        }
-    }
+	/**
+	 * @param array $data
+	 */
+	public function __construct(array $data = [])
+	{
+		if ($data) {
+			$this->hydrate($data, array('milestones'));
+		}
+	}
 
 	/**
 	 * @return int
@@ -43,7 +43,6 @@ class Task implements \JsonSerializable
 	{
 		$this->id = $id;
 	}
-
 
 
 	/**
@@ -76,8 +75,8 @@ class Task implements \JsonSerializable
 	 */
 	public function setDifficulty($difficulty)
 	{
-		$difficulty = (int) $difficulty;
-		if ($difficulty > 3 || $difficulty < 0){
+		$difficulty = (int)$difficulty;
+		if ($difficulty > 3 || $difficulty < 0) {
 			// todo handle this better
 			die('Difficulty not in range 0-3');
 		}
@@ -106,5 +105,13 @@ class Task implements \JsonSerializable
 	public function setMilestone($milestone)
 	{
 		$this->milestones[] = $milestone;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return $this->jsonSerialize();
 	}
 }

@@ -24,7 +24,7 @@ Class TaskModel extends AbstractModel
 	 */
 	public function addTask(Task $task)
 	{
-		$taskData = $this->toArray($task);
+		$taskData = $task->toArray();
 
         // remove child classes for initialization later
         $childClasses = array();
@@ -123,11 +123,6 @@ Class TaskModel extends AbstractModel
             }
 		}
 		return $results;
-	}
-
-	protected function toArray($task)
-	{
-		return $task->jsonSerialize();
 	}
 
     protected function getChildClasses(){

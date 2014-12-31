@@ -1,5 +1,5 @@
 <?php
-namespace MichaelDevery\TaskList;
+namespace MichaelDevery\Tasklist;
 
 class Request
 {

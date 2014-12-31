@@ -5,6 +5,7 @@ class FrontController {
 
 	const CONTROLLER_SUFFIX = 'Controller';
 	const CONTROLLER_NAMESPACE = __NAMESPACE__;
+	const MODEL_NAMESPACE = __NAMESPACE__;
 
 	/**
 	 * @param array $route

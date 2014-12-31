@@ -1,12 +1,14 @@
 <?php
 namespace MichaelDevery\TaskList\Library;
 
+use MichaelDevery\Tasklist\FrontController;
 use MichaelDevery\Tasklist\Request;
 use MichaelDevery\Tasklist\Library\AbstractModel;
 use MichaelDevery\Tasklist\Config;
 
 abstract class AbstractController
 {
+
 	/** @var Request */
 	protected $request;
 	/** @var AbstractModel */
@@ -22,7 +24,7 @@ abstract class AbstractController
 		$this->request = $request;
 		$this->config = $config;
 		$ownName = str_replace('Controller', '', (new \ReflectionClass($this))->getShortName());
-		$modelName =  MODEL_NAMESPACE . '\\' .  $ownName . 'Model';
+		$modelName =  FrontController::MODEL_NAMESPACE . '\\' .  $ownName . 'Model';
 		$this->model = new $modelName($ownName, $config);
 	}
 

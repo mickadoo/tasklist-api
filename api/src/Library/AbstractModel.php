@@ -33,7 +33,5 @@ abstract class AbstractModel
 
 	protected abstract function map(array $data);
 
-	protected abstract function toArray($object);
-
     protected abstract function getChildClasses();
 }
