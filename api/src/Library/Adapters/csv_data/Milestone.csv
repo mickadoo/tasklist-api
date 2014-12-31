@@ -1,1 +1,6 @@
-1,"Test Milestone"
+1,"Test Milestone 1","Reward 1",10.11,1
+2,"Test Milestone 2","Reward 2",5,1
+3,"Test Milestone 1","Reward 1",10.11,2
+4,"Test Milestone 2","Reward 2",5,2
+5,4,"Test Milestone 1","Reward 1",10.11
+6,4,"Test Milestone 2","Reward 2",5

@@ -36,4 +36,3 @@ abstract class AbstractController
         return $_SERVER['HTTP_HOST'];
     }
 }
-

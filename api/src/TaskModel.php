@@ -2,6 +2,7 @@
 namespace MichaelDevery\Tasklist;
 
 use MichaelDevery\Tasklist\Library\AbstractModel;
+use MichaelDevery\Tasklist\Models\ChildClass;
 use MichaelDevery\Tasklist\Models\Task;
 
 Class TaskModel extends AbstractModel
@@ -20,7 +21,7 @@ Class TaskModel extends AbstractModel
 
 	/**
 	 * @param Task $task
-	 * @return array
+	 * @return Task
 	 */
 	public function addTask(Task $task)
 	{
@@ -30,20 +31,30 @@ Class TaskModel extends AbstractModel
         $childClasses = array();
         foreach ($this->getChildClasses() as $childClass){
 			if (isset($taskData[$childClass])) {
-				$childClasses[] = $taskData[$childClass];
+				$childClasses[$childClass] = $taskData[$childClass];
 				unset($taskData[$childClass]);
 			}
         }
+
         // create task
 		$newTaskData = $this->map(
             $this->adapter->create(
-                $this->getName(), $taskData
+                $this->getName(), $taskData, $this->getFieldOrder()
             )
         );
+
         // create child classes
-        $parentId = $task->getId();
-        foreach ($childClasses as $childClass){
-			// todo create child classes using parent id
+        $parentId = $newTaskData['id'];
+        foreach ($childClasses as $name => $childClassGroup){
+			foreach ($childClassGroup as $childClass) {
+				/** @var ChildClass $childClass */
+				$childClass->setParentId($parentId);
+				$modelName = ucfirst(FrontController::singularize($name));
+				$childModelName = __NAMESPACE__ . '\\' . $modelName . 'Model';
+				$childModel = new $childModelName($modelName, $this->config);
+				$addMethod = 'add' . $modelName;
+				$childModel->$addMethod($childClass);
+			}
         }
         $task = new Task($newTaskData);
 		return $task;
@@ -114,7 +125,7 @@ Class TaskModel extends AbstractModel
      */
 	protected function map(array $data)
 	{
-		$fields = ['id','name','difficulty'];
+		$fields = $this->getFieldOrder();
 
 		$results = array();
 		foreach ($data as $key => $current){
@@ -125,11 +136,24 @@ Class TaskModel extends AbstractModel
 		return $results;
 	}
 
+	/**
+	 * @return array
+	 * @inheritdoc
+	 */
     protected function getChildClasses(){
         return [
             'milestones'
         ];
     }
+
+	/**
+	 * @return array
+	 * @inheritdoc
+	 */
+	protected function getFieldOrder()
+	{
+		return ['id','name','difficulty'];
+	}
 }
 
 

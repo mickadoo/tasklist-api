@@ -1,13 +1,10 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
-class Milestone implements \JsonSerializable
+class Milestone extends ChildClass implements \JsonSerializable
 {
 	/** @var int */
 	private $id;
-
-	/** @var int */
-	private $taskId;
 
 	/** @var string */
 	private $name;
@@ -45,22 +42,6 @@ class Milestone implements \JsonSerializable
 	public function setId($id)
 	{
 		$this->id = $id;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getTaskId()
-	{
-		return $this->taskId;
-	}
-
-	/**
-	 * @param int $taskId
-	 */
-	public function setTaskId($taskId)
-	{
-		$this->taskId = $taskId;
 	}
 
 	/**

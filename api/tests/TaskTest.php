@@ -13,6 +13,7 @@ use MichaelDevery\Tasklist\Config;
 use MichaelDevery\Tasklist\Models\Task;
 use MichaelDevery\Tasklist\Request;
 use MichaelDevery\Tasklist\TaskController;
+use MichaelDevery\Tasklist\TaskModel;
 
 class TaskTest extends \PHPUnit_Framework_TestCase {
 
@@ -39,6 +40,29 @@ class TaskTest extends \PHPUnit_Framework_TestCase {
         $request = new Request('api.tasklist.dev/task/');
         $config = new Config( __DIR__ . '/../config/config.yml');
         $taskController = new TaskController($request, $config);
+        $taskModel = new TaskModel('Task', $config);
+
+        $data = [
+            "name" => "Test Name 2",
+            "difficulty" => 1,
+            "milestones" => [
+                [
+                    "name" => "Test Milestone 1",
+                    "reward" => "Reward 1",
+                    "rewardBudget" => 10.11
+                ],
+                [
+                    "name" => "Test Milestone 2",
+                    "reward" => "Reward 2",
+                    "rewardBudget" => 5.00
+                ]
+            ]
+        ];
+
+        $task = new Task($data);
+
+        $response = $taskModel->addTask($task);
+        var_dump($response);
     }
 
     public function hydrateArrayProvider(){

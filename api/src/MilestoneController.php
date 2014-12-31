@@ -53,4 +53,17 @@ class MilestoneController extends AbstractController
 		// todo make proper response
 		return new Response();
 	}
+
+	public function deleteAllMilestones()
+	{
+		$deletedIds = $this->model->deleteAllMilestones();
+
+		$response = new Response();
+		$response->setCode(200);
+
+		$response->setData(json_encode($deletedIds));
+
+		return $response;
+	}
+
 }

@@ -9,7 +9,7 @@ class CsvAdapter implements AdapterInterface
 	/** @var string */
 	protected $dataFolder = 'csv_data/';
 
-	public function create($name, $data)
+	public function create($name, $data, $fields = [])
 	{
 		$this->createResourceFileIfNotExists($name);
 		$fileName = $this->getResourceFileName($name);
@@ -20,7 +20,10 @@ class CsvAdapter implements AdapterInterface
 		// open file for appending
 		$handle = fopen($fileName,'a');
 		// merge new id with data while un-setting old array keys (for mapping)
-		$data = array_merge([$newId], array_values($data));
+		$data = array_merge(['id' => $newId], $data);
+
+		$data = $this->getOrderedArray($data, $fields);
+
 		// write data to end of file
 		fputcsv($handle,$data);
 		// save and return new id
@@ -32,7 +35,7 @@ class CsvAdapter implements AdapterInterface
 	{
 		if (!$this->resourceFileExists($name)){
 			// todo handle this better
-			die('no resource');
+			die('no resource found : ' . $this->getResourceFileName($name));
 		}
 		$file = fopen($this->getResourceFileName($name), 'r');
 
@@ -47,6 +50,10 @@ class CsvAdapter implements AdapterInterface
 			} elseif ($row) { // prevents 'false' being returns for last row
 				$results[] = $row;
 			}
+		}
+		if ($id){
+			// if it got this far then row matching ID wasn't found
+			throw new \Exception('Specified Resource not found');
 		}
         return $results;
 	}
@@ -135,6 +142,23 @@ class CsvAdapter implements AdapterInterface
 			// todo handle better
 			die('not found');
 		}
+	}
+
+	/**
+	 * @param $data
+	 * @param $fields
+	 * @return array
+	 */
+	public function getOrderedArray($data, $fields)
+	{
+		$result = array();
+
+		foreach ($fields as $field){
+			if (isset($data[$field])){
+				$result[] = $data[$field];
+			}
+		}
+		return $result;
 	}
 
 	/**

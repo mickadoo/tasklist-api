@@ -18,13 +18,19 @@ Class MilestoneModel extends AbstractModel
 	}
 
 	/**
-	 * @param array
-	 * @return array
+	 * @param Milestone $milestone
+	 * return Milestone
 	 */
-	public function addMilestone($data)
+	public function addMilestone(Milestone $milestone)
 	{
-		$newMilestone = $this->adapter->create($this->getName(), $data);
-		return $newMilestone;
+		$milestoneData = $milestone->toArray();
+
+		// create task
+		$newTaskData = $this->map(
+			$this->adapter->create(
+				$this->getName(), $milestoneData,  $this->getFieldOrder()
+			)
+		);
 	}
 
 	/**
@@ -46,6 +52,12 @@ Class MilestoneModel extends AbstractModel
 	{
 		$updatedMilestone = $this->adapter->update($this->getName(), $id, $data);
 		return $updatedMilestone;
+	}
+
+	public function deleteAllMilestones()
+	{
+		$deletedIds = $this->adapter->delete($this->name);
+		return $deletedIds;
 	}
 
 	/**
@@ -85,14 +97,25 @@ Class MilestoneModel extends AbstractModel
 		return $results;
 	}
 
+	protected function toArray(Milestone $milestone)
+	{
+		return [
+			'id' => $milestone->getId(),
+			'parentId' => $milestone->getParentId(),
+			'name' =>  $milestone->getName(),
+			'reward' => $milestone->getReward(),
+			'rewardBudget' => $milestone->getRewardBudget()
+		];
+	}
+
 	protected function getChildClasses()
 	{
 		return [];
 	}
 
-	protected function toArray($milestone)
+	protected function getFieldOrder()
 	{
-		return $milestone->jsonSerialize();
+		return ['id','parentId', 'name','reward', 'rewardBudget'];
 	}
 
 	//todo add all other methods	
