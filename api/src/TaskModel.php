@@ -53,10 +53,16 @@ Class TaskModel extends AbstractModel
 				$childModelName = __NAMESPACE__ . '\\' . $modelName . 'Model';
 				$childModel = new $childModelName($modelName, $this->config);
 				$addMethod = 'add' . $modelName;
-				$childModel->$addMethod($childClass);
+				$savedChildClasses[$name][] = $childModel->$addMethod($childClass);
 			}
         }
+		// create basic task
         $task = new Task($newTaskData);
+		// add newly-saved child classes
+		foreach ($savedChildClasses as $name => $newChildClasses){
+			$setter = 'set' . $name;
+			$task->$setter($newChildClasses);
+		}
 		return $task;
 	}
 

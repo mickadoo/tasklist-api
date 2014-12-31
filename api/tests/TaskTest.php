@@ -61,8 +61,10 @@ class TaskTest extends \PHPUnit_Framework_TestCase {
 
         $task = new Task($data);
 
-        $response = $taskModel->addTask($task);
-        var_dump($response);
+        $savedTask = $taskModel->addTask($task);
+
+        $this->assertSame($task->getName(),$savedTask->getName());
+        $this->assertSame($task->getDifficulty(), $savedTask->getDifficulty());
     }
 
     public function hydrateArrayProvider(){

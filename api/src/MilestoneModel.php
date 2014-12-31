@@ -19,18 +19,22 @@ Class MilestoneModel extends AbstractModel
 
 	/**
 	 * @param Milestone $milestone
-	 * return Milestone
+	 * @return Milestone
 	 */
 	public function addMilestone(Milestone $milestone)
 	{
 		$milestoneData = $milestone->toArray();
 
 		// create task
-		$newTaskData = $this->map(
+		$newMilestoneData = $this->map(
 			$this->adapter->create(
 				$this->getName(), $milestoneData,  $this->getFieldOrder()
 			)
 		);
+
+		$newMilestone = new Milestone($newMilestoneData);
+
+		return $newMilestone;
 	}
 
 	/**
@@ -86,7 +90,7 @@ Class MilestoneModel extends AbstractModel
      */
 	protected function map(array $data)
 	{
-		$fields = ['id','milestoneId','name','budget'];
+		$fields = $this->getFieldOrder();
 
 		$results = array();
 		foreach ($data as $key => $current){
