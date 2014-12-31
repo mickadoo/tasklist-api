@@ -1,8 +1,13 @@
 <?php
 namespace MichaelDevery\TaskList;
 
-class Response
+use MichaelDevery\Tasklist\Models\SerializableTrait;
+
+class Response implements \JsonSerializable
 {
+
+    use SerializableTrait;
+
 	/** @var int */
 	private $code;
 	/** @var string */

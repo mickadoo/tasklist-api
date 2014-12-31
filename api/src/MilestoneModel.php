@@ -14,7 +14,7 @@ Class MilestoneModel extends AbstractModel
 	{
 		$milestoneData = $this->map($this->adapter->read($this->name, $id));
 		$milestone = new Milestone($milestoneData);
-		return json_encode($milestone->toArray());
+		return $milestone;
 	}
 
 	/**
@@ -83,6 +83,16 @@ Class MilestoneModel extends AbstractModel
             }
 		}
 		return $results;
+	}
+
+	protected function getChildClasses()
+	{
+		return [];
+	}
+
+	protected function toArray($milestone)
+	{
+		return $milestone->jsonSerialize();
 	}
 
 	//todo add all other methods	

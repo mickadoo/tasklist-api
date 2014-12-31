@@ -11,7 +11,7 @@ class MilestoneController extends AbstractController
 	public function getMilestone($id)
 	{
 		$MilestoneData = $this->model->getMilestone($id);
-		die(var_dump($MilestoneData));
+		die('milestone: ' . var_dump($MilestoneData));
 		// todo make proper response
 		return new Response();
 	}	
@@ -23,7 +23,7 @@ class MilestoneController extends AbstractController
 	{
 		$data = $this->request->getData();
 		$newMilestone = $this->model->addMilestone($data);
-		die(var_dump($newMilestone));
+		die('milestone: ' . var_dump($newMilestone));
 		// todo make proper response format
 		return new Response();
 

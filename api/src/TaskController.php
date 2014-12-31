@@ -82,5 +82,17 @@ class TaskController extends AbstractController
         return $response;
     }
 
+    public function deleteAllTasks()
+    {
+        $deletedIds = $this->model->deleteAllTasks();
+
+        $response = new Response();
+        $response->setCode(200);
+
+        $response->setData(json_encode($deletedIds));
+
+        return $response;
+    }
+
     // todo add methods for *AllTasks
 }

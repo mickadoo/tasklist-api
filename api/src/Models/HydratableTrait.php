@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
+use MichaelDevery\Tasklist\FrontController;
+
 trait HydratableTrait
 {
     /**
@@ -19,7 +21,7 @@ trait HydratableTrait
                 $subClassCollection = array();
                 foreach ($subClassesData as $classData){
                     // prepare class name with namespace
-                    $className = __NAMESPACE__ . '\\' . ucfirst($this->singularize($field));
+                    $className = __NAMESPACE__ . '\\' . ucfirst(FrontController::singularize($field));
                     $subClass = new $className($classData);
                     $subClassCollection[] = $subClass;
                 }
@@ -43,14 +45,5 @@ trait HydratableTrait
                 $this->$setMethodMapper[$setter]($value);
             }
         }
-    }
-
-    /**
-     * @param string $plural
-     * @return string
-     */
-    private function singularize($plural)
-    {
-        return rtrim($plural,'s');
     }
 }

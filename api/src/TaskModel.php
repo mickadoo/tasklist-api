@@ -24,24 +24,26 @@ Class TaskModel extends AbstractModel
 	 */
 	public function addTask(Task $task)
 	{
+		$taskData = $this->toArray($task);
+
         // remove child classes for initialization later
-        $childClasses = arrays();
+        $childClasses = array();
         foreach ($this->getChildClasses() as $childClass){
-            if (isset($data[$childClass])) {
-                $childClasses[] = $data[$childClass];
-                unset($data[$childClass]);
-            }
+			if (isset($taskData[$childClass])) {
+				$childClasses[] = $taskData[$childClass];
+				unset($taskData[$childClass]);
+			}
         }
         // create task
 		$newTaskData = $this->map(
             $this->adapter->create(
-                $this->getName(), $data
+                $this->getName(), $taskData
             )
         );
         // create child classes
         $parentId = $task->getId();
         foreach ($childClasses as $childClass){
-
+			// todo create child classes using parent id
         }
         $task = new Task($newTaskData);
 		return $task;
@@ -89,7 +91,8 @@ Class TaskModel extends AbstractModel
 	/**
 	 * @return Task[]
 	 */
-	public function getAllTasks(){
+	public function getAllTasks()
+	{
 		$tasksData = $this->adapter->read($this->name);
         $tasks = array();
         foreach ($tasksData as $taskData){
@@ -98,13 +101,20 @@ Class TaskModel extends AbstractModel
 		return $tasks;
 	}
 
+	public function deleteAllTasks()
+	{
+		$deletedIds = $this->adapter->delete($this->name);
+		return $deletedIds;
+	}
+
     /**
      * @param array $data
      * @return array
+	 * @description maps a numeric array to string keys
      */
 	protected function map(array $data)
 	{
-		$fields = ['id','name','difficulty','goal'];
+		$fields = ['id','name','difficulty'];
 
 		$results = array();
 		foreach ($data as $key => $current){
@@ -115,14 +125,16 @@ Class TaskModel extends AbstractModel
 		return $results;
 	}
 
+	protected function toArray($task)
+	{
+		return $task->jsonSerialize();
+	}
+
     protected function getChildClasses(){
         return [
-            'reward',
-            'milestone'
+            'milestones'
         ];
     }
-
-	//todo add all other methods	
 }
 
 

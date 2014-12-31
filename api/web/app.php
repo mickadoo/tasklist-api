@@ -1,6 +1,5 @@
 <?php
 namespace MichaelDevery\Tasklist;
-
 require_once('../vendor/autoload.php');
 
 define('MODEL_NAMESPACE', __NAMESPACE__);
@@ -35,4 +34,4 @@ $request = new Request($url, $method, $data, $queryParams);
 $frontController = new FrontController();
 
 // route
-var_dump($frontController->route($route, $request));
+echo $frontController->route($route, $request);

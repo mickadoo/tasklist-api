@@ -3,6 +3,9 @@ namespace MichaelDevery\Tasklist\Models;
 
 class Task implements \JsonSerializable
 {
+	use HydratableTrait;
+	use SerializableTrait;
+
 	/** @var int */
 	private $id;
 
@@ -14,9 +17,6 @@ class Task implements \JsonSerializable
 
 	/** @var Milestone[] */
 	private $milestones;
-
-    use HydratableTrait;
-    use SerializableTrait;
 
     /**
      * @param array $data

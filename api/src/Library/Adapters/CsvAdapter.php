@@ -89,12 +89,19 @@ class CsvAdapter implements AdapterInterface
 
 	public function delete($name, $id = null)
 	{
-		// delete all
 		if (!$id){
+			// delete all
+
+			// get array of all ids deleted
+			$deletedIds = [];
+			$allData = $this->read($name);
+			foreach ($allData as $row){
+				$deletedIds[] = $row[0];
+			}
+			// delete and recreate resource file
 			unlink($this->getResourceFileName($name));
 			$this->createResourceFile($name);
-			// todo decide what to return on successful delete		
-			return true;
+			return $deletedIds;
 		}
 		// open file
 		$file = fopen($this->getResourceFileName($name), 'r');

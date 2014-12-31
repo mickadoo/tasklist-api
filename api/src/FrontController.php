@@ -3,13 +3,13 @@ namespace MichaelDevery\Tasklist;
 
 class FrontController {
 
-
 	const CONTROLLER_SUFFIX = 'Controller';
 	const CONTROLLER_NAMESPACE = __NAMESPACE__;
 
 	/**
 	 * @param array $route
 	 * @param Request $request
+	 * @return string
 	 * @description Initializes controller and calls action in it
 	 */
 	function route ($route, $request) {
@@ -40,11 +40,12 @@ class FrontController {
 			Request::METHOD_PUT => 'replace',
 			Request::METHOD_DELETE => 'delete'
 		);
-		
+
 		// get request specificity to prefix actions
 		$requestSpecificity = count($route) % 2 === 0 ? REQUEST_TARGET_SINGLE : REQUEST_TARGET_ALL;
 
         // check if request is for top level resource
+		$parentId = -1;
         $subRequest = ((int) ((count($route) + 1) / 2) > 1) ? true : false;
         if ($subRequest){
             // request targets a sub-resource of parent
@@ -81,15 +82,35 @@ class FrontController {
 		// initialize controller and pass request to it
 		$controller = new $mainController($request, $config);
         if ($subRequest) {
-            return $controller->$action($parentId, $id);
+            $response = $controller->$action($parentId, $id);
         } else {
-            return $controller->$action($id);
+            $response = $controller->$action($id);
         }
+		return $this->returnResponse($response);
 	}
 
-	function pluralize($word)
+	private function returnResponse(Response $response){
+		header('Content-type: application/json');
+		http_response_code($response->getCode());
+		return json_encode($response);
+	}
+
+	/**
+	 * @param string $word
+	 * @return string
+	 */
+	static function pluralize($word)
 	{
 		// could expand on this, maybe use an existing solution
 		return $word . 's';
+	}
+
+	/**
+	 * @param string $plural
+	 * @return string
+	 */
+	static function singularize($plural)
+	{
+		return rtrim($plural,'s');
 	}
 }
