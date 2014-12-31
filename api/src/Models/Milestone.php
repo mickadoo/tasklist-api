@@ -12,8 +12,11 @@ class Milestone implements \JsonSerializable
 	/** @var string */
 	private $name;
 
-	/** @var Reward */
+	/** @var string */
 	private $reward;
+
+	/** @var float */
+	private $rewardBudget;
 
     use HydratableTrait;
     use SerializableTrait;
@@ -77,7 +80,7 @@ class Milestone implements \JsonSerializable
 	}
 
 	/**
-	 * @return Reward
+	 * @return string
 	 */
 	public function getReward()
 	{
@@ -85,10 +88,26 @@ class Milestone implements \JsonSerializable
 	}
 
 	/**
-	 * @param Reward $reward
+	 * @param string $reward
 	 */
 	public function setReward($reward)
 	{
 		$this->reward = $reward;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getRewardBudget()
+	{
+		return $this->rewardBudget;
+	}
+
+	/**
+	 * @param mixed $rewardBudget
+	 */
+	public function setRewardBudget($rewardBudget)
+	{
+		$this->rewardBudget = $rewardBudget;
 	}
 }

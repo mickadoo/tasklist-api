@@ -24,7 +24,7 @@ class Task implements \JsonSerializable
     public function __construct(array $data = [])
     {
         if ($data) {
-            $this->hydrate($data, array('milestone'));
+            $this->hydrate($data, array('milestones'));
         }
     }
 
@@ -76,6 +76,11 @@ class Task implements \JsonSerializable
 	 */
 	public function setDifficulty($difficulty)
 	{
+		$difficulty = (int) $difficulty;
+		if ($difficulty > 3 || $difficulty < 0){
+			// todo handle this better
+			die('Difficulty not in range 0-3');
+		}
 		$this->difficulty = $difficulty;
 	}
 

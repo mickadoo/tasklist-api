@@ -8,16 +8,19 @@ trait HydratableTrait
      * @param array $subClasses
      * @param array $setMethodMapper
      */
-	public function hydrate(array $data, array $subClasses = array(), array $setMethodMapper = array()){
+	public function hydrate(array $data, array $subClasses = array(), array $setMethodMapper = array())
+    {
         foreach ($data as $field => $value){
             if (!in_array($field, $subClasses)){
                 $this->setValue($field, $value, $setMethodMapper);
             } else {
                 // set sub class
-                $subClassesData = $data[$field . 's'];
+                $subClassesData = $data[$field];
                 $subClassCollection = array();
                 foreach ($subClassesData as $classData){
-                    $subClass = new $field($classData);
+                    // prepare class name with namespace
+                    $className = __NAMESPACE__ . '\\' . ucfirst($this->singularize($field));
+                    $subClass = new $className($classData);
                     $subClassCollection[] = $subClass;
                 }
                 $this->setValue($field, $subClassCollection, $setMethodMapper);
@@ -25,7 +28,13 @@ trait HydratableTrait
         }
     }
 
-    private function setValue($field, $value, $setMethodMapper){
+    /**
+     * @param $field
+     * @param $value
+     * @param $setMethodMapper
+     */
+    private function setValue($field, $value, $setMethodMapper)
+    {
         $setter = 'set' . ucfirst($field);
         if (method_exists($this, $setter)){
             $this->$setter($value);
@@ -34,5 +43,14 @@ trait HydratableTrait
                 $this->$setMethodMapper[$setter]($value);
             }
         }
+    }
+
+    /**
+     * @param string $plural
+     * @return string
+     */
+    private function singularize($plural)
+    {
+        return rtrim($plural,'s');
     }
 }

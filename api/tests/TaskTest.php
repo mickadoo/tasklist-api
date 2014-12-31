@@ -34,12 +34,23 @@ class TaskTest extends \PHPUnit_Framework_TestCase {
         return [
             [
                 [
-                    "name" => "Test Name",
+                    "name" => "Test Name 2",
                     "difficulty" => 1,
-
-                ], // hydration array
-                true, // should succeed,
-            ]
+                    "milestones" => [
+                        [
+                            "name" => "Test Milestone 1",
+                            "reward" => "Reward 1",
+                            "rewardBudget" => 10.11
+                        ],
+                        [
+                            "name" => "Test Milestone 2",
+                            "reward" => "Reward 2",
+                            "rewardBudget" => 5.00
+                        ]
+                    ]
+                ],
+                true,
+            ],
         ];
     }
 }
