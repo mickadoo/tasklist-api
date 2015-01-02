@@ -142,5 +142,3 @@ Class MilestoneModel extends AbstractModel
 		return ['id','parentId', 'name','reward', 'rewardBudget'];
 	}
 }
-
-

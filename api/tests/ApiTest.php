@@ -40,6 +40,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $this->nestedPatchRequest($parentId, $milestoneId);
 
+        $this->nestedGetAllRequest($parentId);
+
+        $this->nestedDeleteAllRequest($parentId, $milestoneId);
     }
 
     /**
@@ -100,6 +103,42 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($milestoneId, (int) $updatedMilestone->getId());
         $this->assertTrue($updatedData['name'] ===  $updatedMilestone->getName());
         $this->assertTrue($updatedData['reward'] ===  $updatedMilestone->getReward());
+    }
+
+    /**
+     * @param int $parentId
+     */
+    public function nestedGetAllRequest($parentId)
+    {
+        $curl = curl_init('api.tasklist.dev/task/' . $parentId . '/milestone/');
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $response = json_decode(curl_exec($curl), true);
+
+        $milestonesData = json_decode($response['data'], true);
+
+        foreach ($milestonesData as $milestoneData){
+            $milestoneData = json_decode($milestoneData, true);
+            $milestone = new Milestone($milestoneData);
+            $this->assertSame((int) $milestone->getParentId(), $parentId);
+        }
+    }
+
+    /**
+     * @param int $parentId
+     */
+    public function nestedDeleteAllRequest($parentId, $childId)
+    {
+        $curl = curl_init('api.tasklist.dev/task/' . $parentId . '/milestone/');
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $response = json_decode(curl_exec($curl), true);
+
+        $deletedIds = json_decode($response['data'], true);
+
+        $this->assertContains($childId, $deletedIds);
     }
 
 
