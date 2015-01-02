@@ -79,9 +79,12 @@ Class MilestoneModel extends AbstractModel
 	 * @return Milestone[]
 	 */
 	public function getAllMilestones(){
-		$Milestones = $this->adapter->read($this->name);
-		//todo build Milestone object and return it
-		return $Milestones;
+		$milestonesData = $this->adapter->read($this->name);
+		$milestones = [];
+		foreach ($milestonesData as $milestoneData){
+			$milestones[] = new Milestone($this->map($milestoneData));
+		}
+		return $milestones;
 	}
 
     /**

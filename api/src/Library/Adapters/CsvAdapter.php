@@ -96,6 +96,8 @@ class CsvAdapter implements AdapterInterface
 
 	public function delete($name, $id = null)
 	{
+		$id = (int) $id;
+
 		if (!$id){
 			// delete all
 
@@ -135,8 +137,7 @@ class CsvAdapter implements AdapterInterface
 		// delete original and replace with temp
 		rename($tempFileName, $this->getResourceFileName($name));
 		// return id
-		if ($found){
-			// todo decide what to return on successful delete
+		if ($found ==  true){
 			return $id;
 		} else {
 			// todo handle better

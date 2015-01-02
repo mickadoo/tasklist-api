@@ -39,7 +39,6 @@ class TaskTest extends \PHPUnit_Framework_TestCase {
     {
         $request = new Request('api.tasklist.dev/task/');
         $config = new Config( __DIR__ . '/../config/config.yml');
-        $taskController = new TaskController($request, $config);
         $taskModel = new TaskModel('Task', $config);
 
         $data = [
@@ -65,6 +64,21 @@ class TaskTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($task->getName(),$savedTask->getName());
         $this->assertSame($task->getDifficulty(), $savedTask->getDifficulty());
+
+        $this->deleteTask($savedTask->getId());
+    }
+
+    /**
+     * @depends testAddTask
+     */
+    public function deleteTask($id)
+    {
+        $config = new Config( __DIR__ . '/../config/config.yml');
+        $taskModel = new TaskModel('Task', $config);
+
+        $response = $taskModel->deleteTask($id);
+
+        $this->assertTrue($id === $response);
     }
 
     public function hydrateArrayProvider(){

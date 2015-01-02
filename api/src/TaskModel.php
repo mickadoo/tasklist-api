@@ -45,6 +45,8 @@ Class TaskModel extends AbstractModel
 
         // create child classes
         $parentId = $newTaskData['id'];
+		$savedChildClasses = [];
+
         foreach ($childClasses as $name => $childClassGroup){
 			foreach ($childClassGroup as $childClass) {
 				/** @var ChildClass $childClass */
@@ -69,10 +71,31 @@ Class TaskModel extends AbstractModel
 	/**
 	 * @param int $id
 	 * @return int
+	 * @depends addTask
 	 */
 	public function deleteTask($id)
 	{
 		$deletedId = $this->adapter->delete($this->getName(), $id);
+
+		// delete child objects
+		foreach ($this->getChildClasses() as $childClassName)
+		{
+			$className = ucfirst(FrontController::singularize($childClassName));
+			$childModelName = __NAMESPACE__ . '\\' . $className . 'Model';
+			$childModel = new $childModelName($className, $this->config);
+
+			$deleteMethod = 'delete' . $className;
+			$getAllMethod = 'getAll' . FrontController::pluralize($className);
+
+			$allChildClasses = $childModel->$getAllMethod();
+
+			/** @var ChildClass $childClass */
+			foreach ($allChildClasses as $childClass){
+				if ($childClass->getParentId() == $id){
+					$childModel->$deleteMethod($childClass->getId());
+				}
+			}
+		}
 		return $deletedId;
 	}
 

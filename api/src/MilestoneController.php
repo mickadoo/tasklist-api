@@ -66,4 +66,22 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
+	public function getAllMilestones()
+	{
+		$milestones = $this->model->getAllMilestones();
+
+		// have to call on each one
+		foreach ($milestones as $key => $milestone){
+			$milestones[$key] = json_encode($milestone);
+		}
+
+		$response = new Response();
+		$response->setCode(200);
+
+		$response->setData(json_encode($milestones));
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/');
+
+		return $response;
+	}
+
 }
