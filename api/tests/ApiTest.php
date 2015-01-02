@@ -110,7 +110,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $response = json_decode(curl_exec($curl), true);
 
-        $createdMilestone = new Milestone(json_decode($response['data'], true));
+        $createdMilestone = new Milestone($response['data'], true);
 
         $this->assertTrue($parentId ===  $createdMilestone->getParentId());
 
@@ -137,7 +137,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $response = json_decode(curl_exec($curl), true);
 
-        $updatedMilestone = new Milestone(json_decode($response['data'], true));
+        $updatedMilestone = new Milestone($response['data']);
 
         $this->assertSame($milestoneId, (int) $updatedMilestone->getId());
         $this->assertTrue($updatedData['name'] ===  $updatedMilestone->getName());
@@ -155,10 +155,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $response = json_decode(curl_exec($curl), true);
 
-        $milestonesData = json_decode($response['data'], true);
+        $milestonesData = $response['data'];
 
         foreach ($milestonesData as $milestoneData){
-            $milestoneData = json_decode($milestoneData, true);
             $milestone = new Milestone($milestoneData);
             $this->assertSame((int) $milestone->getParentId(), $parentId);
         }
@@ -175,7 +174,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $response = json_decode(curl_exec($curl), true);
 
-        $deletedIds = json_decode($response['data'], true);
+        $deletedIds = $response['data'];
 
         $this->assertContains($childId, $deletedIds);
     }
@@ -199,7 +198,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $response = json_decode(curl_exec($curl), true);
 
-        $createdTask = new Task(json_decode($response['data'], true));
+        $createdTask = new Task($response['data'], true);
 
         $this->assertTrue($response['code'] === 201);
         $this->assertTrue($data['name'] === $createdTask->getName());
@@ -228,7 +227,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         /** @var Response $response */
         $response = json_decode(curl_exec($curl), true);
 
-        $updatedTask = new Task(json_decode($response['data'], true));
+        $updatedTask = new Task($response['data'], true);
 
         $this->assertTrue($response['code'] === 200);
         $this->assertTrue($updatedTask->getName() == $updatedData['name']);
@@ -243,7 +242,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         /** @var Response $response */
         $response = json_decode(curl_exec($curl), true);
 
-        $updatedTask = new Task(json_decode($response['data'], true));
+        $updatedTask = new Task($response['data'], true);
 
         $this->assertTrue($response['code'] === 200);
         $this->assertTrue($updatedTask->getId() == $id);
@@ -258,12 +257,12 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         /** @var Response $response */
         $response = json_decode(curl_exec($curl), true);
 
-        $tasksData = json_decode($response['data'], true);
+        $tasksData = $response['data'];
 
         // test all data to be valid
         $tasks = [];
         foreach ($tasksData as $taskData){
-            $testTask = new Task(json_decode($taskData, true));
+            $testTask = new Task($taskData);
             if ($testTask) {
                 $tasks[] = $testTask;
             }

@@ -17,7 +17,7 @@ class MilestoneController extends AbstractController
 		$milestone = $this->model->getMilestone($id, $parentId);
 		$response = new Response();
 		$response->setCode(200);
-		$response->setData(json_encode($milestone));
+		$response->setData($milestone);
 		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $milestone->getId());
 		return $response;
 	}
@@ -41,7 +41,7 @@ class MilestoneController extends AbstractController
 
 		$response = new Response();
 		$response->setCode(201);
-		$response->setData(json_encode($newMilestone));
+		$response->setData($newMilestone);
 		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $newMilestone->getId());
 		return $response;
 	}
@@ -71,7 +71,7 @@ class MilestoneController extends AbstractController
 
 		$response = new Response();
 		$response->setCode(200);
-		$response->setData(json_encode($updatedMilestone));
+		$response->setData($updatedMilestone);
 		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $updatedMilestone->getId());
 		return $response;
 	}
@@ -83,7 +83,7 @@ class MilestoneController extends AbstractController
 		$response = new Response();
 		$response->setCode(200);
 
-		$response->setData(json_encode($deletedIds));
+		$response->setData($deletedIds);
 
 		return $response;
 	}
@@ -94,13 +94,13 @@ class MilestoneController extends AbstractController
 
 		// have to call on each one
 		foreach ($milestones as $key => $milestone){
-			$milestones[$key] = json_encode($milestone);
+			$milestones[$key] = $milestone;
 		}
 
 		$response = new Response();
 		$response->setCode(200);
 
-		$response->setData(json_encode($milestones));
+		$response->setData($milestones);
 		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/');
 
 		return $response;

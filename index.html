@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>Tasklist</title>
+        <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+        <script>
+//            var request = new XMLHttpRequest();
+//            request.open('GET', 'http://api.tasklist.dev/task/10', true);
+//
+//            request.onload = function() {
+//                if (this.status >= 200 && this.status < 400) {
+//                    // Success!
+//                    var data = JSON.parse(this.response);
+//                    console.log(data);
+//                } else {
+//                    // We reached our target server, but it returned an error
+//
+//                }
+//            };
+//
+//            request.onerror = function() {
+//                // There was a connection error of some sort
+//            };
+//
+//            request.send();
+
+//
+            $(document).ready(function(){
+                $.ajax(
+                    {
+                        url:"http://api.tasklist.dev/task",
+                        dataType: "json",
+                        type : 'GET',
+                        success:function(result){
+                            var tasks = jQuery.parseJSON(result.data);
+
+                            console.log(tasks);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        }
+                    }
+                );
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Tasklist</h1>
+        <div id = "task-container">
+
+        </div>
+    </body>
+</html>

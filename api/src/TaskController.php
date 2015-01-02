@@ -17,7 +17,7 @@ class TaskController extends AbstractController
         $task = $this->model->getTask($id);
         $response = new Response();
         $response->setCode(200);
-        $response->setData(json_encode($task));
+        $response->setData($task);
         $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $task->getId());
         return $response;
     }
@@ -33,7 +33,7 @@ class TaskController extends AbstractController
 
         $response = new Response();
         $response->setCode(201);
-        $response->setData(json_encode($newTask));
+        $response->setData($newTask);
         $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $newTask->getId());
         return $response;
     }
@@ -62,7 +62,7 @@ class TaskController extends AbstractController
 
         $response = new Response();
         $response->setCode(200);
-        $response->setData(json_encode($updatedTask));
+        $response->setData($updatedTask);
         $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $updatedTask->getId());
         return $response;
 	}
@@ -73,13 +73,13 @@ class TaskController extends AbstractController
 
         // have to call on each one
         foreach ($tasks as $key => $task){
-            $tasks[$key] = json_encode($task);
+            $tasks[$key] = $task;
         }
 
         $response = new Response();
         $response->setCode(200);
 
-        $response->setData(json_encode($tasks));
+        $response->setData($tasks);
         $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/');
 
         return $response;
@@ -92,7 +92,7 @@ class TaskController extends AbstractController
         $response = new Response();
         $response->setCode(200);
 
-        $response->setData(json_encode($deletedIds));
+        $response->setData($deletedIds);
 
         return $response;
     }
