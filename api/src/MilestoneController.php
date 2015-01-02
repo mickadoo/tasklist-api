@@ -7,12 +7,14 @@ use MichaelDevery\Tasklist\Models\Milestone;
 class MilestoneController extends AbstractController
 {
 	/**
+	 * @param $id
+	 * @param null $parentId
 	 * @return Response
 	 */
-	public function getMilestone($id)
+	public function getMilestone($id, $parentId = null)
 	{
 		/** @var Milestone $milestone */
-		$milestone = $this->model->getMilestone($id);
+		$milestone = $this->model->getMilestone($id, $parentId);
 		$response = new Response();
 		$response->setCode(200);
 		$response->setData(json_encode($milestone));
@@ -74,9 +76,9 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
-	public function deleteAllMilestones()
+	public function deleteAllMilestones($id = null, $parentId = null)
 	{
-		$deletedIds = $this->model->deleteAllMilestones();
+		$deletedIds = $this->model->deleteAllMilestones($parentId);
 
 		$response = new Response();
 		$response->setCode(200);
@@ -86,9 +88,9 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
-	public function getAllMilestones()
+	public function getAllMilestones($id = null, $parentId = null)
 	{
-		$milestones = $this->model->getAllMilestones();
+		$milestones = $this->model->getAllMilestones($parentId);
 
 		// have to call on each one
 		foreach ($milestones as $key => $milestone){

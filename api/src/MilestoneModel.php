@@ -6,14 +6,18 @@ use MichaelDevery\Tasklist\Models\Milestone;
 
 Class MilestoneModel extends AbstractModel
 {
-    /**
-     * @param $id
-     * @return Milestone
-     */
-	public function getMilestone($id)
+	/**
+	 * @param $id
+	 * @param null $parentId
+	 * @return Milestone
+	 */
+	public function getMilestone($id, $parentId)
 	{
 		$milestoneData = $this->map($this->adapter->read($this->name, $id));
 		$milestone = new Milestone($milestoneData);
+		if ($parentId && $milestone->getParentId() !== $parentId){
+			die('No milestone for that Id belongs to milestone ' . $id);
+		}
 		return $milestone;
 	}
 
@@ -65,9 +69,47 @@ Class MilestoneModel extends AbstractModel
 		return $updatedMilestone;
 	}
 
-	public function deleteAllMilestones()
+
+	/**
+	 * @param int $parentId
+	 * @return Milestone[]
+	 */
+	public function getAllMilestones($parentId = null)
 	{
-		$deletedIds = $this->adapter->delete($this->name);
+		$milestonesData = $this->adapter->read($this->name);
+		$milestones = [];
+		foreach ($milestonesData as $milestoneData){
+			if ($parentId){
+				$newMilestone = new Milestone($this->map($milestoneData));
+				if ($newMilestone->getParentId() == $parentId){
+					$milestones[] = $newMilestone;
+				}
+			} else {
+				$milestones[] = new Milestone($this->map($milestoneData));
+			}
+		}
+		return $milestones;
+	}
+
+	/**
+	 * @param int $parentId
+	 * @return array
+	 */
+	public function deleteAllMilestones($parentId = null)
+	{
+		$deletedIds = [];
+
+		if (!$parentId){
+			// delete them all
+			$deletedIds = $this->adapter->delete($this->name);
+		} else {
+			// delete only those matching parent id
+			$allChildMilestones = $this->getAllMilestones($parentId);
+			foreach ($allChildMilestones as $childMilestone){
+				$childId = $childMilestone->getId();
+				$deletedIds[] = $this->deleteMilestone($childId);
+			}
+		}
 		return $deletedIds;
 	}
 
@@ -80,18 +122,6 @@ Class MilestoneModel extends AbstractModel
 	{
 		$updatedMilestone = $this->adapter->update($this->getName(), $id, $data);
 		return $updatedMilestone;
-	}
-
-	/**
-	 * @return Milestone[]
-	 */
-	public function getAllMilestones(){
-		$milestonesData = $this->adapter->read($this->name);
-		$milestones = [];
-		foreach ($milestonesData as $milestoneData){
-			$milestones[] = new Milestone($this->map($milestoneData));
-		}
-		return $milestones;
 	}
 
 	/**

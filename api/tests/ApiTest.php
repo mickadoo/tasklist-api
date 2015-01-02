@@ -81,7 +81,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function nestedPatchRequest($parentId, $milestoneId)
     {
-        $updatedData = ['name' => 'Updated Name'];
+        $updatedData = ['name' => 'Updated Name', 'reward' => 'Updated Reward'];
 
         $jsonData = json_encode($updatedData);
         $curl = curl_init('api.tasklist.dev/task/' . $parentId . '/milestone/' . $milestoneId . '/');
@@ -99,6 +99,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($milestoneId, (int) $updatedMilestone->getId());
         $this->assertTrue($updatedData['name'] ===  $updatedMilestone->getName());
+        $this->assertTrue($updatedData['reward'] ===  $updatedMilestone->getReward());
     }
 
 
