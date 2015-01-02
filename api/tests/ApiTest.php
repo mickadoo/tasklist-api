@@ -43,6 +43,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->nestedGetAllRequest($parentId);
 
         $this->nestedDeleteAllRequest($parentId, $milestoneId);
+
+        // cleanup
+        $this->deleteTask($parentId);
     }
 
     /**
