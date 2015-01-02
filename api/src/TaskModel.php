@@ -107,7 +107,7 @@ Class TaskModel extends AbstractModel
 	{
 		$updatedTaskData = $this->map(
             $this->adapter->update(
-                $this->getName(), $id, $data
+                $this->getName(), $id, $data, $this->getFieldOrder()
             )
         );
 
@@ -123,6 +123,7 @@ Class TaskModel extends AbstractModel
 	 */
 	public function replaceTask($id, $data)
 	{
+		die('not implemented yet');
 		$updatedTask = $this->adapter->update($this->getName(), $id, $data);
 		return $updatedTask;
 	}
@@ -144,24 +145,6 @@ Class TaskModel extends AbstractModel
 	{
 		$deletedIds = $this->adapter->delete($this->name);
 		return $deletedIds;
-	}
-
-    /**
-     * @param array $data
-     * @return array
-	 * @description maps a numeric array to string keys
-     */
-	protected function map(array $data)
-	{
-		$fields = $this->getFieldOrder();
-
-		$results = array();
-		foreach ($data as $key => $current){
-            if (isset($fields[$key])) {
-                $results[$fields[$key]] = $current;
-            }
-		}
-		return $results;
 	}
 
 	/**

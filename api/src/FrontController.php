@@ -83,7 +83,7 @@ class FrontController {
 		// initialize controller and pass request to it
 		$controller = new $mainController($request, $config);
         if ($subRequest) {
-            $response = $controller->$action($parentId, $id);
+            $response = $controller->$action($id, $parentId);
         } else {
             $response = $controller->$action($id);
         }

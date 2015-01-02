@@ -56,7 +56,7 @@ Class MilestoneModel extends AbstractModel
 	{
 		$updatedMilestoneData = $this->map(
 			$this->adapter->update(
-				$this->getName(), $id, $data
+				$this->getName(), $id, $data, $this->getFieldOrder()
 			)
 		);
 
@@ -92,23 +92,6 @@ Class MilestoneModel extends AbstractModel
 			$milestones[] = new Milestone($this->map($milestoneData));
 		}
 		return $milestones;
-	}
-
-    /**
-     * @param array $data
-     * @return array
-     */
-	protected function map(array $data)
-	{
-		$fields = $this->getFieldOrder();
-
-		$results = array();
-		foreach ($data as $key => $current){
-            if (isset($fields[$key])) {
-                $results[$fields[$key]] = $current;
-            }
-		}
-		return $results;
 	}
 
 	/**

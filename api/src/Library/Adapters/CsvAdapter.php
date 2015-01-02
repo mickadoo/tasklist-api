@@ -75,9 +75,10 @@ class CsvAdapter implements AdapterInterface
 	 * @param string $name
 	 * @param int $id
 	 * @param array $data
+	 * @param array $fields
 	 * @return array
 	 */
-	public function update($name, $id, $data)
+	public function update($name, $id, $data, $fields = [])
 	{
 		// open file
 		$file = fopen($this->getResourceFileName($name), 'r');
@@ -92,7 +93,9 @@ class CsvAdapter implements AdapterInterface
 				if ($row && $id !== (int) $row[0]){
 					fputcsv($tempFile, $row);
 				} elseif ($row) {
-					fputcsv($tempFile, array_merge([$id], $data));
+					// get array of updated data without destroying existing row
+					$updatedData = $this->getUpdatedRow($row, $data, $fields);
+					fputcsv($tempFile, $updatedData);
 					$found = true;
 				}
 			}
@@ -106,7 +109,7 @@ class CsvAdapter implements AdapterInterface
 		rename($tempFileName, $this->getResourceFileName($name));
 		if ($found){
             // return id and updated data without keys (for mapping)
-			return array_merge([$id], array_values($data));
+			return $updatedData;
 		} else {
 			// todo handle better
 			die('not found');
@@ -168,6 +171,25 @@ class CsvAdapter implements AdapterInterface
 			// todo handle better
 			die('not found');
 		}
+	}
+
+	/**
+	 * @param array $oldRow
+	 * @param array $newFieldData
+	 * @param array $fieldNames
+	 * @return array
+	 * @description creates associative array using field names and returns original row with updated field that are
+	 * set in the newFieldData only changed
+	 */
+	public function getUpdatedRow($oldRow, $newFieldData, $fieldNames)
+	{
+		$assocRow = array();
+		foreach ($oldRow as $key => $current){
+			if (isset($fieldNames[$key])) {
+				$assocRow[$fieldNames[$key]] = $current;
+			}
+		}
+		return $this->getOrderedArray(array_merge($assocRow, $newFieldData), $fieldNames);
 	}
 
 	/**

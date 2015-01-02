@@ -34,13 +34,8 @@ abstract class AbstractModel
 		return $this->name;
 	}
 
-	/**
-	 * @param array $data
-	 * @return array
-	 * @description used when returning non-associative arrays from storage adapter. maps the numeric key array to
-	 * an associative one
-	 */
-	protected abstract function map(array $data);
+
+
 
 	/**
 	 * @return array
@@ -54,4 +49,23 @@ abstract class AbstractModel
 	 * @description required for non-database storage to specify which order to store the fields in
 	 */
 	protected abstract function getFieldOrder();
+
+	/**
+	 * @param array $data
+	 * @return array
+	 * @description used when returning non-associative arrays from storage adapter. maps the numeric key array to
+	 * an associative one
+	 */
+	protected function map(array $data)
+	{
+		$fields = $this->getFieldOrder();
+
+		$results = array();
+		foreach ($data as $key => $current){
+			if (isset($fields[$key])) {
+				$results[$fields[$key]] = $current;
+			}
+		}
+		return $results;
+	}
 }

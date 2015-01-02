@@ -18,21 +18,29 @@ class MilestoneController extends AbstractController
 		$response->setData(json_encode($milestone));
 		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $milestone->getId());
 		return $response;
-	}	
+	}
 
 	/**
+	 * @param int $id
+	 * @param int $parentId
 	 * @return Response
 	 */
-	public function addMilestone()
+	public function addMilestone($id = null, $parentId = null)
 	{
 		$data = $this->request->getData();
+		$milestone = new Milestone($data);
+
+		if ($parentId){
+			$milestone->setParentId($parentId);
+		}
+
 		/** @var Milestone $milestone */
-		$milestone = $this->model->addMilestone($data);
+		$newMilestone = $this->model->addMilestone($milestone);
 
 		$response = new Response();
 		$response->setCode(201);
-		$response->setData(json_encode($milestone));
-		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $milestone->getId());
+		$response->setData(json_encode($newMilestone));
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $newMilestone->getId());
 		return $response;
 	}
 
