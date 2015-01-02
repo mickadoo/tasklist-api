@@ -3,27 +3,6 @@
         <title>Tasklist</title>
         <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
         <script>
-//            var request = new XMLHttpRequest();
-//            request.open('GET', 'http://api.tasklist.dev/task/10', true);
-//
-//            request.onload = function() {
-//                if (this.status >= 200 && this.status < 400) {
-//                    // Success!
-//                    var data = JSON.parse(this.response);
-//                    console.log(data);
-//                } else {
-//                    // We reached our target server, but it returned an error
-//
-//                }
-//            };
-//
-//            request.onerror = function() {
-//                // There was a connection error of some sort
-//            };
-//
-//            request.send();
-
-//
             $(document).ready(function(){
                 $.ajax(
                     {
@@ -31,9 +10,9 @@
                         dataType: "json",
                         type : 'GET',
                         success:function(result){
-                            var tasks = jQuery.parseJSON(result.data);
-
-                            console.log(tasks);
+                            jQuery.each(result.data, function(index, task) {
+                                addTaskRow(task.id,task.name,task.difficulty);
+                            });
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             alert(errorThrown);
@@ -41,6 +20,12 @@
                     }
                 );
             });
+
+            function addTaskRow(id, name, difficulty){
+                $('#task-container').append(
+                        id + ' :: ' + name + ' :: ' + difficulty + '<hr>'
+                )
+            }
         </script>
     </head>
     <body>
