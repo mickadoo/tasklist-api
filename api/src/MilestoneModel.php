@@ -2,6 +2,7 @@
 namespace MichaelDevery\Tasklist;
 
 use MichaelDevery\Tasklist\Library\AbstractModel;
+use MichaelDevery\Tasklist\Library\ApiException;
 use MichaelDevery\Tasklist\Models\Milestone;
 
 Class MilestoneModel extends AbstractModel
@@ -16,7 +17,7 @@ Class MilestoneModel extends AbstractModel
 		$milestoneData = $this->map($this->adapter->read($this->name, $id));
 		$milestone = new Milestone($milestoneData);
 		if ($parentId && $milestone->getParentId() !== $parentId){
-			die('No milestone for that Id belongs to milestone ' . $id);
+			throw new ApiException(400, "No milestone with Id $parentId exists for task $id");
 		}
 		return $milestone;
 	}

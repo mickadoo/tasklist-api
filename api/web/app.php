@@ -2,6 +2,8 @@
 namespace MichaelDevery\Tasklist;
 require_once('../vendor/autoload.php');
 
+use MichaelDevery\Tasklist\Library\ApiException;
+
 const REQUEST_TARGET_SINGLE = '';
 const REQUEST_TARGET_ALL = 'All';
 
@@ -23,6 +25,17 @@ if (isset($urlParts['path'])){
 	$route = [''];
 }
 
+/**
+ * @param ApiException $apiException
+ */
+function apiExceptionHandler(ApiException $apiException)
+{
+	$response = new ErrorResponse();
+	$response->setErrorCode($apiException->getErrorNum());
+	$response->setErrorMessage($apiException->getErrorMessage());
+	echo json_encode($response);
+}
+
 // set query parameters
 $queryParams = (isset($urlParts['query']) ? $urlParts['query'] : null);
 
@@ -30,6 +43,8 @@ $queryParams = (isset($urlParts['query']) ? $urlParts['query'] : null);
 $request = new Request($url, $method, $data, $queryParams);
 
 $frontController = new FrontController();
+
+set_exception_handler('MichaelDevery\Tasklist\apiExceptionHandler');
 
 // route
 echo $frontController->route($route, $request);

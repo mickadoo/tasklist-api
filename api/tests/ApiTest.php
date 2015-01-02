@@ -16,6 +16,30 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @param string $url
+     * @param string $method
+     * @param array $data
+     * @dataProvider badApiRequestDataProvider
+     */
+    public function testApiExceptions($url, $method = 'GET', $data = [])
+    {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        if ($data){
+            $jsonData = json_encode($data);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Content-Length: ' . strlen($jsonData))
+            );
+        }
+
+        $response = curl_exec($curl);
+        var_dump($response);
+    }
+
+    /**
      * @param $data
      * @dataProvider taskDataProvider
      */
@@ -269,6 +293,45 @@ class ApiTest extends \PHPUnit_Framework_TestCase
                         ]
                     ]
                 ],
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function badApiRequestDataProvider(){
+        return [
+            [
+                'api.tasklist.dev/'
+            ],
+            [
+                'api.tasklist.dev/tasks',
+            ],
+            [
+                'api.tasklist.dev/task/cat'
+            ],
+            [
+                'api.tasklist.dev/task/10/milestone/1'
+            ],
+            [
+                'api.tasklist.dev/task/',
+                'HORSE'
+            ],
+            [
+                'api.tasklist.dev/task/',
+                'POST',
+                [
+                    'nan' => 'Cat'
+                ]
+            ],
+            [
+                'api.tasklist.dev/task/',
+                'POST',
+                [
+                    'name' => 'Test Name',
+                    'difficulty' => 51
+                ]
             ]
         ];
     }

@@ -2,13 +2,16 @@
 namespace MichaelDevery\Tasklist;
 
 use MichaelDevery\Tasklist\Library\AbstractController;
+use MichaelDevery\Tasklist\Library\ApiException;
 use MichaelDevery\Tasklist\Models\Task;
 
 class TaskController extends AbstractController
 {
-	/**
-	 * @return Response
-	 */
+    /**
+     * @param int $id
+     * @return Response
+     * @throws ApiException
+     */
 	public function getTask($id)
     {
         $task = $this->model->getTask($id);
@@ -93,6 +96,4 @@ class TaskController extends AbstractController
 
         return $response;
     }
-
-    // todo add methods for *AllTasks
 }

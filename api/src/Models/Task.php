@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
+use MichaelDevery\Tasklist\Library\ApiException;
+
 class Task implements \JsonSerializable
 {
 	use HydratableTrait;
@@ -77,8 +79,7 @@ class Task implements \JsonSerializable
 	{
 		$difficulty = (int)$difficulty;
 		if ($difficulty > 3 || $difficulty < 0) {
-			// todo handle this better
-			die('Difficulty not in range 0-3');
+			throw new ApiException(400, "Task difficulty must be in the range 0 - 3");
 		}
 		$this->difficulty = $difficulty;
 	}

@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist;
 
+use MichaelDevery\Tasklist\Library\ApiException;
+
 class FrontController {
 
 	const CONTROLLER_SUFFIX = 'Controller';
@@ -11,6 +13,7 @@ class FrontController {
 	 * @param array $route
 	 * @param Request $request
 	 * @return string
+	 * @throws ApiException
 	 * @description Initializes controller and calls action in it
 	 */
 	function route ($route, $request) {
@@ -20,18 +23,12 @@ class FrontController {
 
 		// if request targets base url return error
 		if ($route[0] === '') {
-			exit("cannot target base url \n");
-			$error = true;
-			// $route = array('Error', 'TargetBase');
-			exit;
+			throw new ApiException(400, 'Please specify a resource in the url.');
 		}
 		
 		// refuse request if method not recognized
 		if (!in_array($request->getMethod(), $acceptedMethods)) {
-			exit("method not allowed \n");
-			$error = true;
-			// $route = array('Error','BadMethod'); 
-			exit;
+			throw new ApiException(405, "Method " . $request->getMethod() . " is not allowed");
 		}
 
 		$actionPrefix = array(
@@ -50,13 +47,16 @@ class FrontController {
         $subRequest = ((int) ((count($route) + 1) / 2) > 1) ? true : false;
         if ($subRequest){
             // request targets a sub-resource of parent
-            $parent = ucfirst(array_shift($route));
+           	// remove parent resource from url (e.g. task)
+			array_shift($route);
+			// get parent id
             $parentId = (int) array_shift($route);
         }
 
         $mainController = null;
         $id = null;
         $action = null;
+		$resource = null;
 
 		if ($error === false) {
 			// specify resource
@@ -73,7 +73,12 @@ class FrontController {
 					$action .= ucfirst($this->pluralize($resource));
 				} else {
 					$action .= ucfirst($resource);
-					$id = (int) array_shift($route);
+					$id = array_shift($route);
+					if (!is_numeric($id)){
+						throw new ApiException(400, 'Id must be a number');
+					} else {
+						$id = (int)$id;
+					}
 				}
 			}
 		}
@@ -81,7 +86,11 @@ class FrontController {
 		// create config
 		$config = new Config(__DIR__ . '/../config/config.yml');
 		// initialize controller and pass request to it
-		$controller = new $mainController($request, $config);
+		if (class_exists($mainController)) {
+			$controller = new $mainController($request, $config);
+		} else {
+			throw new ApiException('400', 'Controller does not exist for ' . $resource);
+		}
         if ($subRequest) {
             $response = $controller->$action($id, $parentId);
         } else {
@@ -112,6 +121,16 @@ class FrontController {
 	 */
 	static function singularize($plural)
 	{
-		return rtrim($plural,'s');
+		return rtrim($plural, 's');
+	}
+
+	/**
+	 * @param string $jsonString
+	 * @return boolean
+	 */
+	public static function isValidJson($jsonString)
+	{
+		json_decode($jsonString);
+		return (json_last_error() === JSON_ERROR_NONE) ? true : false;
 	}
 }

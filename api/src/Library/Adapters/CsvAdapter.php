@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist\Library\Adapters;
 
+use MichaelDevery\Tasklist\Library\ApiException;
+
 class CsvAdapter implements AdapterInterface
 {
 
@@ -24,8 +26,12 @@ class CsvAdapter implements AdapterInterface
 		$id = $this->getLastId($name);
 		$newId = $id + 1;
 		// open file for appending
+
+		if (@!fopen($fileName,'a')){
+			throw new ApiException(500, 'Could not open resource file for ' . $name);
+		}
 		$handle = fopen($fileName,'a');
-		// merge new id with data while un-setting old array keys (for mapping)
+			// merge new id with data while un-setting old array keys (for mapping)
 		$data = array_merge(['id' => $newId], $data);
 
 		$data = $this->getOrderedArray($data, $fields);
@@ -39,16 +45,15 @@ class CsvAdapter implements AdapterInterface
 
 	/**
 	 * @param $name
-	 * @param int $id
+	 * @param null $id
 	 * @param array $fields
 	 * @return array
-	 * @throws \Exception
+	 * @throws ApiException
 	 */
 	public function read($name, $id = null, $fields = [])
 	{
 		if (!$this->resourceFileExists($name)){
-			// todo handle this better
-			die('no resource found : ' . $this->getResourceFileName($name));
+			throw new ApiException(500, "Resource file cannot be found or created for $name");
 		}
 		$file = fopen($this->getResourceFileName($name), 'r');
 
@@ -66,7 +71,7 @@ class CsvAdapter implements AdapterInterface
 		}
 		if ($id){
 			// if it got this far then row matching ID wasn't found
-			throw new \Exception('Specified Resource not found');
+			throw new ApiException(404, "No $name found with id: $id");
 		}
         return $results;
 	}
@@ -77,11 +82,14 @@ class CsvAdapter implements AdapterInterface
 	 * @param array $data
 	 * @param array $fields
 	 * @return array
+	 * @throws ApiException
 	 */
 	public function update($name, $id, $data, $fields = [])
 	{
 		// open file
 		$file = fopen($this->getResourceFileName($name), 'r');
+		$updatedData = [];
+
 		// create temp file
 		$tempFileName = __DIR__ . '/' . $this->getDataFolder() . 'temp.csv';
 		$tempFile = fopen($tempFileName, 'w');
@@ -100,8 +108,7 @@ class CsvAdapter implements AdapterInterface
 				}
 			}
 		} else {
-			// todo handle better
-			die('no file');
+			throw new ApiException(500, "Resource file cannot be found or created for $name");
 		}
 		fclose($file);
 		fclose($tempFile);
@@ -111,8 +118,7 @@ class CsvAdapter implements AdapterInterface
             // return id and updated data without keys (for mapping)
 			return $updatedData;
 		} else {
-			// todo handle better
-			die('not found');
+			throw new ApiException(404, "No $name found with id: $id");
 		}
 	}
 
@@ -120,7 +126,7 @@ class CsvAdapter implements AdapterInterface
 	 * @param string $name
 	 * @param int $id
 	 * @return array|int|null
-	 * @throws \Exception
+	 * @throws ApiException
 	 */
 	public function delete($name, $id = null)
 	{
@@ -157,8 +163,7 @@ class CsvAdapter implements AdapterInterface
 				}
 			}
 		} else {
-			// todo handle better
-			die('no file');
+			throw new ApiException(500, "Resource file cannot be found or created for $name");
 		}
 		fclose($file);
 		fclose($tempFile);
@@ -168,8 +173,7 @@ class CsvAdapter implements AdapterInterface
 		if ($found ==  true){
 			return $id;
 		} else {
-			// todo handle better
-			die('not found');
+			throw new ApiException(404, "No $name found with id: $id");
 		}
 	}
 
@@ -225,13 +229,15 @@ class CsvAdapter implements AdapterInterface
 	}
 
 	/**
-	 * @descrption convenience function combining check and creation
+	 * @param string $name
+	 * @throws ApiException
+	 * @description convenience function combining check and creation
 	 */
 	private function createResourceFileIfNotExists($name)
 	{
 		if (!$this->resourceFileExists($name)){
 			if (!$this->createResourceFile($name)){
-				die('couldnt create file');
+				throw new ApiException(500, "Couldn't create CSV storage file for $name");
 			}
 		}
 	}

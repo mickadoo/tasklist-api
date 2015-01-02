@@ -2,6 +2,7 @@
 namespace MichaelDevery\Tasklist\Models;
 
 use MichaelDevery\Tasklist\FrontController;
+use MichaelDevery\Tasklist\Library\ApiException;
 
 trait HydratableTrait
 {
@@ -31,9 +32,10 @@ trait HydratableTrait
     }
 
     /**
-     * @param $field
-     * @param $value
-     * @param $setMethodMapper
+     * @param string $field
+     * @param mixed $value
+     * @param array $setMethodMapper
+     * @throws ApiException
      */
     private function setValue($field, $value, $setMethodMapper)
     {
@@ -41,8 +43,10 @@ trait HydratableTrait
         if (method_exists($this, $setter)){
             $this->$setter($value);
         } else {
-            if (method_exists($this, $setMethodMapper[$setter])){
+            if ((isset($setMethodMapper[$setter]) && method_exists($this, $setMethodMapper[$setter]))){
                 $this->$setMethodMapper[$setter]($value);
+            } else {
+                throw new ApiException(400, "Trying to set property '$field' which does not exist");
             }
         }
     }

@@ -9,11 +9,11 @@ class Response implements \JsonSerializable
     use SerializableTrait;
 
 	/** @var int */
-	private $code;
+	protected $code;
 	/** @var string */
-	private $resourceUrl;
+	protected $resourceUrl;
 	/** @var string */
-	private $data;
+	protected $data;
 
     /**
      * @return int
@@ -62,14 +62,4 @@ class Response implements \JsonSerializable
     {
         $this->resourceUrl = $resourceUrl;
     }
-
-	/**
-	 * @param string $jsonString
-	 * @return boolean
-	 */
-	private function isValidJson($jsonString)
-	{
-		json_decode($jsonString);
-		return (json_last_error() === JSON_ERROR_NONE) ? true : false;
-	}
 }
