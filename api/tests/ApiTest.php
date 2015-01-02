@@ -14,7 +14,6 @@ use MichaelDevery\TaskList\Response;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @param string $url
      * @param string $method
@@ -35,8 +34,21 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $response = curl_exec($curl);
-        var_dump($response);
+        $response = json_decode(curl_exec($curl), true);
+        $errorCode = (int) $response['errorCode'];
+
+        $this->assertNotFalse(
+            filter_var(
+                $errorCode,
+                FILTER_VALIDATE_INT,
+                array(
+                    'options' => array(
+                        'min_range' => 400,
+                        'max_range' => 599
+                    )
+                )
+            )
+        );
     }
 
     /**
