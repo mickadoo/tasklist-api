@@ -123,6 +123,50 @@ class CsvAdapter implements AdapterInterface
 	}
 
 	/**
+	 * @param $name
+	 * @param $id
+	 * @param $data
+	 * @return array
+	 * @throws ApiException
+	 */
+	public function replace($name, $id, $data, $fields = [])
+	{
+		$newRow = [];
+		// open file
+		$file = fopen($this->getResourceFileName($name), 'r');
+		// create temp file
+		$tempFileName = __DIR__ . '/' . $this->getDataFolder() . 'temp.csv';
+		$tempFile = fopen($tempFileName, 'w');
+		// loop through file and write if doesn't match id
+		$found = false;
+		if ($file){
+			while (! feof($file)){
+				$row = fgetcsv($file);
+				if ($row && $id !== (int) $row[0]){
+					fputcsv($tempFile, $row);
+				} elseif ($row) {
+					$newRow = array_merge(['id' => $id], $data);
+					$newRow = $this->getOrderedArray($newRow, $fields);
+					fputcsv($tempFile, $newRow);
+					$found = true;
+				}
+			}
+		} else {
+			throw new ApiException(500, "Resource file cannot be found or created for $name");
+		}
+		fclose($file);
+		fclose($tempFile);
+		// delete original and replace with temp
+		rename($tempFileName, $this->getResourceFileName($name));
+		if ($found){
+			// return id and updated data without keys (for mapping)
+			return $newRow;
+		} else {
+			throw new ApiException(404, "No $name found with id: $id");
+		}
+	}
+
+	/**
 	 * @param string $name
 	 * @param int $id
 	 * @return array|int|null
@@ -208,6 +252,8 @@ class CsvAdapter implements AdapterInterface
 		foreach ($fields as $field){
 			if (isset($data[$field])){
 				$result[] = $data[$field];
+			} else {
+				$result[] = null;
 			}
 		}
 		return $result;

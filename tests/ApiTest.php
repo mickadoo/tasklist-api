@@ -57,10 +57,11 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     public function testAll($data)
     {
-        $createdId = $this->addTask($data)->getId();
-        $this->updateTask($createdId);
-        $this->getTask($createdId);
-        $this->deleteTask($createdId);
+        $createdTask = $this->addTask($data);
+        $this->updateTask($createdTask->getId());
+        $this->getTask($createdTask->getId());
+        $this->replaceMilestone($createdTask->getId(), $createdTask->getMilestones()[0]->getId());
+        $this->deleteTask($createdTask->getId());
     }
 
     /**
@@ -75,9 +76,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $milestoneId = $createdMilestone->getId();
 
         $this->nestedPatchRequest($parentId, $milestoneId);
-
         $this->nestedGetAllRequest($parentId);
-
         $this->nestedDeleteAllRequest($parentId, $milestoneId);
 
         // cleanup
@@ -246,6 +245,31 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($response['code'] === 200);
         $this->assertTrue($updatedTask->getId() == $id);
+    }
+
+    public function replaceMilestone($parentId, $milestoneId)
+    {
+        $updatedData = ['name' => 'Replaced Name'];
+
+        $jsonData = json_encode($updatedData);
+
+        $curl = curl_init('api.tasklist.dev/milestone/' . $parentId . '/milestone/' . $milestoneId . '/');
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($jsonData))
+        );
+
+        /** @var Response $response */
+        $response = json_decode(curl_exec($curl), true);
+
+        $updatedMilestone = new Milestone($response['data'], true);
+
+        $this->assertTrue($response['code'] === 200);
+        $this->assertTrue($updatedMilestone->getName() == $updatedData['name']);
+        $this->assertEmpty($updatedMilestone->getReward());
     }
 
     public function testGetAllTasks()

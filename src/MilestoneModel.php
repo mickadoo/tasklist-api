@@ -8,9 +8,10 @@ use MichaelDevery\Tasklist\Models\Milestone;
 Class MilestoneModel extends AbstractModel
 {
 	/**
-	 * @param $id
-	 * @param null $parentId
+	 * @param int $id
+	 * @param int $parentId
 	 * @return Milestone
+	 * @throws ApiException
 	 */
 	public function getMilestone($id, $parentId)
 	{
@@ -70,6 +71,24 @@ Class MilestoneModel extends AbstractModel
 		return $updatedMilestone;
 	}
 
+	/**
+	 * @param int $id
+	 * @param array $data
+	 * @return array
+	 */
+	public function replaceMilestone($id, $data)
+	{
+		$replacedMilestoneData = $this->map(
+			$this->adapter->replace(
+				$this->getName(), $id, $data, $this->getFieldOrder()
+			)
+		);
+
+		$replacedMilestone = new Milestone($replacedMilestoneData);
+
+		return $replacedMilestone;
+	}
+
 
 	/**
 	 * @param int $parentId
@@ -112,17 +131,6 @@ Class MilestoneModel extends AbstractModel
 			}
 		}
 		return $deletedIds;
-	}
-
-	/**
-	 * @param int $id
-	 * @param array $data
-	 * @return array
-	 */
-	public function replaceMilestone($id, $data)
-	{
-		$updatedMilestone = $this->adapter->update($this->getName(), $id, $data);
-		return $updatedMilestone;
 	}
 
 	/**

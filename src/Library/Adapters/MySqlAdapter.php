@@ -1,8 +1,6 @@
 <?php
 namespace MichaelDevery\Tasklist\Library\Adapters;
 
-use MichaelDevery\Tasklist\Library\Adapters\AdapterInterface;
-
 class MySqlAdapter implements AdapterInterface
 {
 	public function create()
@@ -16,6 +14,11 @@ class MySqlAdapter implements AdapterInterface
 	}
 
 	public function update()
+	{
+		// todo write method body
+	}
+
+	public function replace()
 	{
 		// todo write method body
 	}

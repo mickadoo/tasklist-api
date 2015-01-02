@@ -50,14 +50,22 @@ class MilestoneController extends AbstractController
 	 * @param int $id
 	 * @return Response
 	 */
-	public function deleteMilestone($id)
+	public function replaceMilestone($id, $parentId = null)
 	{
-		$deletedId = $this->model->deleteMilestone($id);
+		$data = $this->request->getData();
+		// preserve parent id if this is a sub-request
+		if ($parentId){
+			$data['parentId'] = $parentId;
+		}
+		$replacedMilestone = $this->model->replaceMilestone($id, $data);
+
 		$response = new Response();
 		$response->setCode(200);
-		$response->setData(['id' => $deletedId]);
+		$response->setData($replacedMilestone);
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $replacedMilestone->getId());
 		return $response;
 	}
+
 
 	/**
 	 * @param int $id
@@ -76,6 +84,24 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
+	/**
+	 * @param int $id
+	 * @return Response
+	 */
+	public function deleteMilestone($id)
+	{
+		$deletedId = $this->model->deleteMilestone($id);
+		$response = new Response();
+		$response->setCode(200);
+		$response->setData(['id' => $deletedId]);
+		return $response;
+	}
+
+	/**
+	 * @param int $id
+	 * @param int $parentId
+	 * @return Response
+	 */
 	public function deleteAllMilestones($id = null, $parentId = null)
 	{
 		$deletedIds = $this->model->deleteAllMilestones($parentId);
@@ -88,6 +114,11 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
+	/**
+	 * @param int $id
+	 * @param int $parentId
+	 * @return Response
+	 */
 	public function getAllMilestones($id = null, $parentId = null)
 	{
 		$milestones = $this->model->getAllMilestones($parentId);

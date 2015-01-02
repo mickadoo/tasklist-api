@@ -67,6 +67,22 @@ class TaskController extends AbstractController
         return $response;
 	}
 
+    /**
+     * @param int $id
+     * @return Response
+     */
+    public function replaceTask($id)
+    {
+        $data = $this->request->getData();
+        $replacedTask = $this->model->replaceTask($id, $data);
+
+        $response = new Response();
+        $response->setCode(200);
+        $response->setData($replacedTask);
+        $response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $replacedTask->getId());
+        return $response;
+    }
+
     public function getAllTasks()
     {
         $tasks = $this->model->getAllTasks();

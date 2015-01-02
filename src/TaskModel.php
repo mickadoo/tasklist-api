@@ -123,9 +123,15 @@ Class TaskModel extends AbstractModel
 	 */
 	public function replaceTask($id, $data)
 	{
-		die('not implemented yet');
-		$updatedTask = $this->adapter->update($this->getName(), $id, $data);
-		return $updatedTask;
+		$replacedTaskData = $this->map(
+			$this->adapter->replace(
+				$this->getName(), $id, $data, $this->getFieldOrder()
+			)
+		);
+
+		$replacedTask = new Task($replacedTaskData);
+
+		return $replacedTask;
 	}
 
 	/**

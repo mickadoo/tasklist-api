@@ -9,5 +9,7 @@ Interface AdapterInterface
 
 	public function update($resourceName, $id, $data);
 
+	public function replace($resourceName, $id, $data);
+
 	public function delete($resourceName, $id = null);
 }
