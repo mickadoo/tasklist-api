@@ -183,7 +183,9 @@ class CsvAdapter implements AdapterInterface
 	private function createResourceFileIfNotExists($name)
 	{
 		if (!$this->resourceFileExists($name)){
-			$this->createResourceFile($name);
+			if (!$this->createResourceFile($name)){
+				die('couldnt create file');
+			}
 		}
 	}
 
@@ -192,9 +194,11 @@ class CsvAdapter implements AdapterInterface
 	 */
 	private function createResourceFile($name)
 	{
-		return touch($this->getResourceFileName($name));
+		touch($this->getResourceFileName($name));
+		chmod($this->getResourceFileName($name), 0770);
+		chown($this->getResourceFileName($name), get_current_user());
+		return true;
 	}
-
 
 	/**
 	 * @return int

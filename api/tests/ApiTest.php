@@ -42,7 +42,6 @@ class ApiTest extends \PHPUnit_Framework_TestCase {
                 'Content-Length: ' . strlen($jsonData))
         );
 
-        /** @var Response $response */
         $response = json_decode(curl_exec($curl), true);
 
         $createdTask = new Task(json_decode($response['data'], true));
