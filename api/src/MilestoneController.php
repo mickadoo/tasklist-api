@@ -1,7 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist;
 
-use MichaelDevery\Tasklist\Library\AbstractController; 
+use MichaelDevery\Tasklist\Library\AbstractController;
+use MichaelDevery\Tasklist\Models\Milestone;
 
 class MilestoneController extends AbstractController
 {
@@ -10,10 +11,13 @@ class MilestoneController extends AbstractController
 	 */
 	public function getMilestone($id)
 	{
-		$MilestoneData = $this->model->getMilestone($id);
-		die('milestone: ' . var_dump($MilestoneData));
-		// todo make proper response
-		return new Response();
+		/** @var Milestone $milestone */
+		$milestone = $this->model->getMilestone($id);
+		$response = new Response();
+		$response->setCode(200);
+		$response->setData(json_encode($milestone));
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $milestone->getId());
+		return $response;
 	}	
 
 	/**
@@ -22,11 +26,14 @@ class MilestoneController extends AbstractController
 	public function addMilestone()
 	{
 		$data = $this->request->getData();
-		$newMilestone = $this->model->addMilestone($data);
-		die('milestone: ' . var_dump($newMilestone));
-		// todo make proper response format
-		return new Response();
+		/** @var Milestone $milestone */
+		$milestone = $this->model->addMilestone($data);
 
+		$response = new Response();
+		$response->setCode(201);
+		$response->setData(json_encode($milestone));
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $milestone->getId());
+		return $response;
 	}
 
 	/**
@@ -36,9 +43,10 @@ class MilestoneController extends AbstractController
 	public function deleteMilestone($id)
 	{
 		$deletedId = $this->model->deleteMilestone($id);
-		die('Deleted : ' . $deletedId);
-		// todo make proper response
-		return new Response();
+		$response = new Response();
+		$response->setCode(200);
+		$response->setData(['id' => $deletedId]);
+		return $response;
 	}
 
 	/**
@@ -48,10 +56,14 @@ class MilestoneController extends AbstractController
 	public function updateMilestone($id)
 	{
 		$data = $this->request->getData();
+		/** @var Milestone $updatedMilestone */
 		$updatedMilestone = $this->model->updateMilestone($id, $data);
-		die('Updated: \n ' . var_dump($updatedMilestone));
-		// todo make proper response
-		return new Response();
+
+		$response = new Response();
+		$response->setCode(200);
+		$response->setData(json_encode($updatedMilestone));
+		$response->setResourceUrl($this->getBaseUrl() . '/' . lcfirst($this->model->getName()) . '/' . $updatedMilestone->getId());
+		return $response;
 	}
 
 	public function deleteAllMilestones()

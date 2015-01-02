@@ -14,7 +14,6 @@ Class TaskModel extends AbstractModel
 	public function getTask($id)
 	{
 		$taskData = $this->map($this->adapter->read($this->name, $id));
-        // todo error if not found
 		$task = new Task($taskData);
 		return $task;
 	}

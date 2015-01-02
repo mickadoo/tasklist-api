@@ -54,7 +54,14 @@ Class MilestoneModel extends AbstractModel
 	 */
 	public function updateMilestone($id, $data)
 	{
-		$updatedMilestone = $this->adapter->update($this->getName(), $id, $data);
+		$updatedMilestoneData = $this->map(
+			$this->adapter->update(
+				$this->getName(), $id, $data
+			)
+		);
+
+		$updatedMilestone = new Milestone($updatedMilestoneData);
+
 		return $updatedMilestone;
 	}
 
@@ -104,28 +111,23 @@ Class MilestoneModel extends AbstractModel
 		return $results;
 	}
 
-	protected function toArray(Milestone $milestone)
-	{
-		return [
-			'id' => $milestone->getId(),
-			'parentId' => $milestone->getParentId(),
-			'name' =>  $milestone->getName(),
-			'reward' => $milestone->getReward(),
-			'rewardBudget' => $milestone->getRewardBudget()
-		];
-	}
-
+	/**
+	 * @return array
+	 * @inheritdoc
+	 */
 	protected function getChildClasses()
 	{
 		return [];
 	}
 
+	/**
+	 * @return array
+	 * @inheritdoc
+	 */
 	protected function getFieldOrder()
 	{
 		return ['id','parentId', 'name','reward', 'rewardBudget'];
 	}
-
-	//todo add all other methods	
 }
 
 

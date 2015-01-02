@@ -9,6 +9,12 @@ class CsvAdapter implements AdapterInterface
 	/** @var string */
 	protected $dataFolder = 'csv_data/';
 
+	/**
+	 * @param string $name
+	 * @param array $data
+	 * @param array $fields
+	 * @return array
+	 */
 	public function create($name, $data, $fields = [])
 	{
 		$this->createResourceFileIfNotExists($name);
@@ -31,7 +37,14 @@ class CsvAdapter implements AdapterInterface
 		return $data;
 	}
 
-	public function read($name, $id = null, $fields = null)
+	/**
+	 * @param $name
+	 * @param int $id
+	 * @param array $fields
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function read($name, $id = null, $fields = [])
 	{
 		if (!$this->resourceFileExists($name)){
 			// todo handle this better
@@ -58,6 +71,12 @@ class CsvAdapter implements AdapterInterface
         return $results;
 	}
 
+	/**
+	 * @param string $name
+	 * @param int $id
+	 * @param array $data
+	 * @return array
+	 */
 	public function update($name, $id, $data)
 	{
 		// open file
@@ -94,6 +113,12 @@ class CsvAdapter implements AdapterInterface
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param int $id
+	 * @return array|int|null
+	 * @throws \Exception
+	 */
 	public function delete($name, $id = null)
 	{
 		$id = (int) $id;
