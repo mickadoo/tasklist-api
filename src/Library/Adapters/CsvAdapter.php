@@ -12,10 +12,11 @@ class CsvAdapter implements AdapterInterface
 	protected $dataFolder = 'csv_data/';
 
 	/**
-	 * @param string $name
-	 * @param array $data
+	 * @param $name
+	 * @param $data
 	 * @param array $fields
 	 * @return array
+	 * @throws ApiException
 	 */
 	public function create($name, $data, $fields = [])
 	{
@@ -295,7 +296,7 @@ class CsvAdapter implements AdapterInterface
 	{
 		touch($this->getResourceFileName($name));
 		chmod($this->getResourceFileName($name), 0770);
-		chown($this->getResourceFileName($name), get_current_user());
+		//chown($this->getResourceFileName($name), get_current_user());
 		return true;
 	}
 

@@ -73,7 +73,8 @@ class Task implements \JsonSerializable
 	}
 
 	/**
-	 * @var int $difficulty
+	 * @param int $difficulty
+	 * @throws ApiException
 	 */
 	public function setDifficulty($difficulty)
 	{

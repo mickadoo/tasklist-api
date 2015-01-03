@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDevery\Tasklist\Models;
 
+use MichaelDevery\Tasklist\Library\ApiException;
+
 class Milestone extends ChildClass implements \JsonSerializable
 {
 	/** @var int */
@@ -85,10 +87,14 @@ class Milestone extends ChildClass implements \JsonSerializable
 	}
 
 	/**
-	 * @param mixed $rewardBudget
+	 * @param float $rewardBudget
+	 * @throws ApiException
 	 */
 	public function setRewardBudget($rewardBudget)
 	{
+		if ($rewardBudget && ! is_numeric($rewardBudget)){
+			throw new ApiException(400, 'Reward budget (' . $rewardBudget . ') must be a float');
+		}
 		$this->rewardBudget = $rewardBudget;
 	}
 
