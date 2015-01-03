@@ -281,17 +281,21 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         /** @var Response $response */
         $response = json_decode(curl_exec($curl), true);
 
-        $tasksData = $response['data'];
+        if (isset($response['data'])){
+            $tasksData = $response['data'];
 
-        // test all data to be valid
-        $tasks = [];
-        foreach ($tasksData as $taskData){
-            $testTask = new Task($taskData);
-            if ($testTask) {
-                $tasks[] = $testTask;
+            // test all data to be valid
+            $tasks = [];
+            foreach ($tasksData as $taskData) {
+                $testTask = new Task($taskData);
+                if ($testTask) {
+                    $tasks[] = $testTask;
+                }
             }
+            $this->assertTrue(count($tasks) === count($tasksData));
+        } else {
+            $this->assertTrue($response['code'] == 200);
         }
-        $this->assertTrue(count($tasks) === count($tasksData));
     }
 
     public function deleteTask($id){

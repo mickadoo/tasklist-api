@@ -22,12 +22,16 @@ class TaskController extends AbstractController
         return $response;
     }
 
-	/**
-	 * @return Response
-	 */
+    /**
+     * @return Response
+     * @throws ApiException
+     */
 	public function addTask()
 	{
 		$data = $this->request->getData();
+        if (!$data){
+            throw new ApiException(400, 'No data provided for new task');
+        }
         $task = new Task($data);
 		$newTask = $this->model->addTask($task);
 
