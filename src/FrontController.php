@@ -101,7 +101,6 @@ class FrontController {
 
 	private function returnResponse(Response $response){
 		header('Content-type: application/json');
-		header("Access-Control-Allow-Origin: *");
 		http_response_code($response->getCode());
 		return json_encode($response);
 	}

@@ -34,7 +34,6 @@ function apiExceptionHandler(ApiException $apiException)
 	$response->setErrorCode($apiException->getErrorNum());
 	$response->setErrorMessage($apiException->getErrorMessage());
 	header('Content-type: application/json');
-	header("Access-Control-Allow-Origin: *");
 	http_response_code($response->getErrorCode());
 	echo json_encode($response);
 }
