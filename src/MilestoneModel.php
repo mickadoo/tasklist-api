@@ -148,6 +148,6 @@ Class MilestoneModel extends AbstractModel
 	 */
 	protected function getFieldOrder()
 	{
-		return ['id','parentId', 'name','reward', 'rewardBudget'];
+		return ['id','parentId', 'name','reward', 'rewardBudget', 'complete'];
 	}
 }

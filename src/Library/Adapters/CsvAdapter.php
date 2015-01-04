@@ -325,4 +325,14 @@ class CsvAdapter implements AdapterInterface
 	{
 		return $this->dataFolder;
 	}
+
+//	private function convertBoolean(array $data){
+//		foreach ($data as $key => $current){
+//			if ($current === false){
+//				$data[$key] = 'false';
+//			} elseif ($current === true){
+//				$data[$key] = 'true';
+//			}
+//		}
+//	}
 }

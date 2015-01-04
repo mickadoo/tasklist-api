@@ -31,6 +31,7 @@ class MilestoneController extends AbstractController
 	{
 		$data = $this->request->getData();
 		$milestone = new Milestone($data);
+		$milestone->setComplete('false');
 
 		if ($parentId){
 			$milestone->setParentId($parentId);

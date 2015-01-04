@@ -17,6 +17,9 @@ class Milestone extends ChildClass implements \JsonSerializable
 	/** @var float */
 	private $rewardBudget;
 
+	/** @var  string */
+	private $complete;
+
     use HydratableTrait;
     use SerializableTrait;
 
@@ -84,6 +87,27 @@ class Milestone extends ChildClass implements \JsonSerializable
 	public function getRewardBudget()
 	{
 		return $this->rewardBudget;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function isComplete()
+	{
+		return $this->complete;
+	}
+
+	/**
+	 * @param string $complete
+	 * @throws ApiException
+	 */
+	public function setComplete($complete)
+	{
+		if ($complete === 'true' || $complete === 'false'){
+			$this->complete = $complete;
+		} else {
+			throw new ApiException(400, 'Milestone complete must be "true" or "false", "' . $complete . '" given');
+		}
 	}
 
 	/**

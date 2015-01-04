@@ -35,6 +35,7 @@ function apiExceptionHandler(ApiException $apiException)
 	$response->setErrorMessage($apiException->getErrorMessage());
 	header('Content-type: application/json');
 	header('Error-message: ' . $response->getErrorMessage());
+	echo json_encode($response);
 	http_response_code($response->getErrorCode());
 }
 

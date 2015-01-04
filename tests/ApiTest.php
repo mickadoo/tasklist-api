@@ -323,12 +323,14 @@ class ApiTest extends \PHPUnit_Framework_TestCase
                         [
                             "name" => "Test Milestone 1",
                             "reward" => "Reward 1",
-                            "rewardBudget" => 10.11
+                            "rewardBudget" => 10.11,
+                            "complete" => true,
                         ],
                         [
                             "name" => "Test Milestone 2",
                             "reward" => "Reward 2",
-                            "rewardBudget" => 5.00
+                            "rewardBudget" => 5.00,
+                            "complete" => false
                         ]
                     ]
                 ],
