@@ -34,7 +34,8 @@ class FrontController {
 			$controllerName = $this::CONTROLLER_NAMESPACE . '\\' . $customRoute['controller'] . 'Controller';
 			$action = $customRoute['action'];
 			$mainController = new $controllerName($request, $this->config);
-			return $mainController->$action();
+			$response = $mainController->$action();
+			return $this->returnResponse($response);
 		}
 
 		$acceptedMethods = ['GET','POST','PUT','PATCH','DELETE'];

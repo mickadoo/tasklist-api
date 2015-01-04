@@ -138,9 +138,31 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
-	public function getCompleteMilestones()
+	/**
+	 * @returns Response
+	 * @description Custom route action to return all rewards for completed milestones
+	 */
+	public function getAllDueRewards()
 	{
+		/** @var Milestone[] $allMilestones */
+		$allMilestones = $this->model->getAllMilestones();
 
+		$dueGoals = [];
+
+		foreach ($allMilestones as $key => $milestone){
+			if ($milestone->isComplete() == 'true'){
+				$dueGoals[$key]['milestoneId'] = $milestone->getId();
+				$dueGoals[$key]['reward'] = $milestone->getReward();
+				$dueGoals[$key]['rewardBudget'] = $milestone->getRewardBudget();
+			}
+		}
+
+		$response = new Response();
+		$response->setCode(200);
+
+		$response->setData($dueGoals);
+		$response->setResourceUrl($this->getBaseUrl() . '/' . $this->request->getUrl());
+
+		return $response;
 	}
-
 }
