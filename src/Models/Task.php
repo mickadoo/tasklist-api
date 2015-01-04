@@ -79,8 +79,8 @@ class Task implements \JsonSerializable
 	public function setDifficulty($difficulty)
 	{
 		$difficulty = (int)$difficulty;
-		if ($difficulty > 3 || $difficulty < 0) {
-			throw new ApiException(400, "Task difficulty must be in the range 0 - 3");
+		if ($difficulty > 5 || $difficulty < 1) {
+			throw new ApiException(400, "Task difficulty must be in the range 1 - 5");
 		}
 		$this->difficulty = $difficulty;
 	}
