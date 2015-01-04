@@ -152,8 +152,8 @@ class MilestoneController extends AbstractController
 		foreach ($allMilestones as $key => $milestone){
 			if ($milestone->isComplete() == 'true'){
 				$dueGoals[$key]['milestoneId'] = $milestone->getId();
-				$dueGoals[$key]['reward'] = $milestone->getReward();
-				$dueGoals[$key]['rewardBudget'] = $milestone->getRewardBudget();
+				$dueGoals[$key]['name'] = $milestone->getReward();
+				$dueGoals[$key]['budget'] = $milestone->getRewardBudget();
 			}
 		}
 
