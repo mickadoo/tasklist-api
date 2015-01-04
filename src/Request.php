@@ -37,6 +37,14 @@ class Request
 	/**
 	 * @return string
 	 */
+	public function getUrl()
+	{
+		return $this->url;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getData()
 	{
 		return $this->data;

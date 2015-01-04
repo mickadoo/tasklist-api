@@ -138,4 +138,9 @@ class MilestoneController extends AbstractController
 		return $response;
 	}
 
+	public function getCompleteMilestones()
+	{
+
+	}
+
 }

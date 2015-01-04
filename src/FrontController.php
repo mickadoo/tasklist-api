@@ -9,6 +9,15 @@ class FrontController {
 	const CONTROLLER_NAMESPACE = __NAMESPACE__;
 	const MODEL_NAMESPACE = __NAMESPACE__;
 
+	/** @var  Config */
+	private $config;
+
+	public function __construct()
+	{
+		// create config
+		$this->config = new Config(__DIR__ . '/../config/config.yml');
+	}
+
 	/**
 	 * @param array $route
 	 * @param Request $request
@@ -17,6 +26,16 @@ class FrontController {
 	 * @description Initializes controller and calls action in it
 	 */
 	function route ($route, $request) {
+
+		// check if request url matches a custom route
+		$customRoutes = $this->config->getCustomRoutes();
+		if (in_array($request->getUrl(), array_keys($customRoutes))){
+			$customRoute = $customRoutes[$request->getUrl()];
+			$controllerName = $this::CONTROLLER_NAMESPACE . '\\' . $customRoute['controller'] . 'Controller';
+			$action = $customRoute['action'];
+			$mainController = new $controllerName($request, $this->config);
+			return $mainController->$action();
+		}
 
 		$acceptedMethods = ['GET','POST','PUT','PATCH','DELETE'];
 		$error = false;
@@ -83,11 +102,9 @@ class FrontController {
 			}
 		}
 
-		// create config
-		$config = new Config(__DIR__ . '/../config/config.yml');
 		// initialize controller and pass request to it
 		if (class_exists($mainController)) {
-			$controller = new $mainController($request, $config);
+			$controller = new $mainController($request, $this->config);
 		} else {
 			throw new ApiException('400', 'Controller does not exist for ' . $resource);
 		}

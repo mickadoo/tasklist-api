@@ -1,6 +1,7 @@
 <?php
 namespace MichaelDevery\Tasklist;
 
+use MichaelDevery\Tasklist\Library\ApiException;
 use Symfony\Component\Yaml\Yaml;
 
 class Config
@@ -9,15 +10,19 @@ class Config
 	private $adapter;
 	/** @var array */
 	private $adapterSettings;
+	/** @var  array */
+	private $customRoutes;
 
 	/**
-	 * @param array $data
+	 * @param string $dir
+	 * @throws ApiException
 	 */
 	public function __construct($dir)
 	{
 		$data = $this->readConfig($dir);
 		$this->adapter = (isset($data['adapter'])) ? $data['adapter'] : null;
-		$this->adapterSettings = (isset($data['adapters'][$this->adapter])) ? $data['adapters'][$this->adapter] : null;
+		$this->adapterSettings = (isset($data['adapters'][$this->adapter])) ? $data['adapters'][$this->adapter] : [];
+		$this->customRoutes = (isset($data['custom_routes'])) ? $data['custom_routes'] : [];
 	}
 
 	/**
@@ -39,12 +44,22 @@ class Config
 	/**
 	 * @return array
 	 */
+	public function getCustomRoutes()
+	{
+		return $this->customRoutes;
+	}
+
+	/**
+	 * @param $dir
+	 * @return array
+	 * @throws \Exception
+	 */
 	public function readConfig($dir)
 	{
 		if(file_exists($dir)){
 			return Yaml::parse($dir);
 		} else {
-			throw new \Exception('Cannot find config file');
+			throw new ApiException(500, 'Cannot find config file');
 		}
 	}
 }
