@@ -26,7 +26,7 @@ class Request
 	 */
 	public function __construct($url, $method = Request::METHOD_GET, $data = null, $queryParams = null)
 	{	
-		$this->url = $url;
+		$this->url = rtrim($url,'/');
 		$this->method = $method;
 		if ($this->isValidJson($data)) {
 			$this->data = json_decode($data, 1);

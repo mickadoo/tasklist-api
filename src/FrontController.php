@@ -27,7 +27,7 @@ class FrontController {
 	 */
 	function route ($route, $request) {
 
-		// check if request url matches a custom route
+		// custom routes
 		$customRoutes = $this->config->getCustomRoutes();
 		if (in_array($request->getUrl(), array_keys($customRoutes))){
 			$customRoute = $customRoutes[$request->getUrl()];
@@ -95,7 +95,7 @@ class FrontController {
 					$action .= ucfirst($resource);
 					$id = array_shift($route);
 					if (!is_numeric($id)){
-						throw new ApiException(400, 'Id must be a number');
+						throw new ApiException(400, 'Resource id in url must be a number, "' . $id . '" given');
 					} else {
 						$id = (int)$id;
 					}
