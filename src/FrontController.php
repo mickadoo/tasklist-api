@@ -15,7 +15,7 @@ class FrontController {
 	public function __construct()
 	{
 		// create config
-		$this->config = new Config(__DIR__ . '/../config/config.yml');
+		$this->config = new Config(__DIR__ . '/../config/');
 	}
 
 	/**

@@ -56,10 +56,18 @@ class Config
 	 */
 	public function readConfig($dir)
 	{
-		if(file_exists($dir)){
-			return Yaml::parse($dir);
+		$configFile = $dir . 'config.yml';
+		$routesFile = $dir. 'routes.yml';
+
+		if(file_exists($configFile)){
+			$config =  Yaml::parse($configFile);
 		} else {
 			throw new ApiException(500, 'Cannot find config file');
 		}
+		// load routes
+		if(file_exists($routesFile)){
+			$config['custom_routes'] =  Yaml::parse($routesFile);
+		}
+		return $config;
 	}
 }

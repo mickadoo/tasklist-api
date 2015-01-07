@@ -1,0 +1,3 @@
+'reward/get-complete':
+        controller: Milestone
+        action: getAllDueRewards
