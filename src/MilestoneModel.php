@@ -60,6 +60,12 @@ Class MilestoneModel extends AbstractModel
 	 */
 	public function updateMilestone($id, $data)
 	{
+		// if milestone is being set as completed then unset parent task
+		// this is to prevent completed milestones (and their due rewards) being deleted if parent task is deleted
+		if (isset($data['complete']) && $data['complete'] == 'true'){
+			$data['parentId'] = '';
+		}
+
 		$updatedMilestoneData = $this->map(
 			$this->adapter->update(
 				$this->getName(), $id, $data, $this->getFieldOrder()
