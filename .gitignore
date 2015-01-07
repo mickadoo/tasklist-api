@@ -1,6 +1,6 @@
 .idea/
 config/
-!config/config.sample.yml
+!/config/config.sample.yml
 vendor/
 composer.lock
 src/Library/Adapters/csv_data/
