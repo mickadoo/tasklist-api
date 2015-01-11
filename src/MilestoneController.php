@@ -78,6 +78,11 @@ class MilestoneController extends AbstractController
 		/** @var Milestone $updatedMilestone */
 		$updatedMilestone = $this->model->updateMilestone($id, $data);
 
+		// if there is no reward for completed milestones then just delete the milestone completely
+		if ($updatedMilestone->isComplete() == 'true' && $updatedMilestone->getReward() == null){
+			$this->model->deleteMilestone($id);
+		}
+
 		$response = new Response();
 		$response->setCode(200);
 		$response->setData($updatedMilestone);

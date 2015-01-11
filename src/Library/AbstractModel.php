@@ -34,9 +34,6 @@ abstract class AbstractModel
 		return $this->name;
 	}
 
-
-
-
 	/**
 	 * @return array
 	 * @description Used by the hydrate function, so it won't try to hydrate objects directly, but instead

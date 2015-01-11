@@ -1,5 +1,6 @@
 adapter: CsvAdapter
 adapters:
+        - CsvAdapter
         - MySqlAdapter:
                 host: localhost
                 username: <your-username>
